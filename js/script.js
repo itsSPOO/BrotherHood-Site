@@ -238,12 +238,8 @@ if (contactForm) {
         });
     }
     
-    contactForm.addEventListener('submit', async (e) => {
-        // Don't prevent default immediately - let the form work as fallback
-        // Only prevent if we're handling it with JavaScript
-        
-        // Get form data
-        const formData = new FormData(contactForm);
+    contactForm.addEventListener('submit', (e) => {
+        // Get form data first
         const name = contactForm.querySelector('input[name="name"]').value.trim();
         const email = contactForm.querySelector('input[name="email"]').value.trim();
         const message = contactForm.querySelector('textarea[name="message"]').value.trim();
@@ -298,41 +294,33 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
-        // Try JavaScript submission first
-        try {
-            const response = await fetch('https://formspree.io/f/mrbajdpl', {
-                method: 'POST',
-                body: formData
-            });
-            
-            console.log('Formspree response status:', response.status);
-            
-            // If successful, show success message
-            if (response.ok) {
-                const successMessage = currentLanguage === 'ar' 
-                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                    : 'Your message has been sent successfully! We will contact you soon.';
-                showNotification(successMessage, 'success');
-                contactForm.reset();
-                e.preventDefault(); // Prevent form from submitting normally
-            } else {
-                // If JavaScript fails, let the form submit normally
-                console.log('JavaScript submission failed, allowing normal form submission');
-                // Don't prevent default - let form work normally
-            }
-        } catch (error) {
-            console.error('Form submission error:', error);
-            // If there's any error, let the form submit normally
-            console.log('JavaScript error, allowing normal form submission');
-            // Don't prevent default - let form work normally
-        }
+        // Let the form submit normally to Formspree
+        // The form will handle the submission and redirect
+        // We'll show a success message after a delay
         
-        // Reset button state after a short delay
         setTimeout(() => {
+            const successMessage = currentLanguage === 'ar' 
+                ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                : 'Your message has been sent successfully! We will contact you soon.';
+            showNotification(successMessage, 'success');
+            
+            // Reset button state
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
-        }, 2000);
+        }, 1000);
     });
+    
+    // Check for success when returning from Formspree
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true' || urlParams.get('form') === 'success') {
+        const successMessage = currentLanguage === 'ar' 
+            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+            : 'Your message has been sent successfully! We will contact you soon.';
+        showNotification(successMessage, 'success');
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
     
 }
 
