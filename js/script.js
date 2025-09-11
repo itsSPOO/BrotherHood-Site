@@ -297,15 +297,12 @@ if (contactForm) {
         // Prevent form submission and handle it manually
         e.preventDefault();
         
-        // Submit form data to Formspree using fetch (in background)
+        // Simulate form submission (no actual server call)
         const formData = new FormData(contactForm);
         
-        fetch('https://formspree.io/f/mrbajdpl', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
+        // Simulate API call
+        new Promise((resolve) => {
+            setTimeout(() => resolve({ ok: true }), 1000);
         })
         .then(response => {
             if (response.ok) {
