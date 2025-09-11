@@ -46,7 +46,7 @@ website/
 1. **Clone/Download** the repository
 2. **Upload** files to any web server
 3. **Customize** content in `index.html`
-4. **Deploy** to GitHub Pages, Netlify, or any hosting
+4. **Deploy** to GitHub Pages or any hosting
 
 ## ⚙️ Customization
 
@@ -148,7 +148,7 @@ website/
 1. **استنساخ/تحميل** المستودع
 2. **رفع** الملفات إلى أي خادم ويب
 3. **تخصيص** المحتوى في `index.html`
-4. **نشر** على GitHub Pages أو Netlify أو أي استضافة
+4. **نشر** على GitHub Pages أو أي استضافة
 
 ## ⚙️ التخصيص
 
