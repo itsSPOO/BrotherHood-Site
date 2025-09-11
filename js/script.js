@@ -294,30 +294,33 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
-        // Store form data for thank you page
-        localStorage.setItem('formSubmission', JSON.stringify({
-            name: name,
-            email: email,
-            message: message,
-            timestamp: new Date().toISOString()
-        }));
+        // Let the form submit normally to Formspree
+        // The form will handle the submission and redirect
+        // We'll show a success message after a delay
         
-        // Show loading state and submit form
-        const successMessage = currentLanguage === 'ar' 
-            ? 'تم إرسال رسالتك بنجاح!' 
-            : 'Your message has been sent successfully!';
-        showNotification(successMessage, 'success');
-        
-        // Show thank you section after 1 second
         setTimeout(() => {
-            showThankYouSection();
+            const successMessage = currentLanguage === 'ar' 
+                ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                : 'Your message has been sent successfully! We will contact you soon.';
+            showNotification(successMessage, 'success');
+            
+            // Reset button state
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
         }, 1000);
-        
-        // Let the form submit normally to Formspree (this will happen in background)
-        // The user will see the thank you section
     });
     
-    // Formspree will now redirect to thank-you.html automatically
+    // Check for success when returning from Formspree
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true' || urlParams.get('form') === 'success') {
+        const successMessage = currentLanguage === 'ar' 
+            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+            : 'Your message has been sent successfully! We will contact you soon.';
+        showNotification(successMessage, 'success');
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
     
 }
 
@@ -818,63 +821,3 @@ const addServerInfo = () => {
 
 // Initialize server info
 addServerInfo();
-
-// Thank You Section Functions
-function showThankYouSection() {
-    const contactSection = document.getElementById('contact');
-    const thankYouSection = document.getElementById('thank-you');
-    
-    if (contactSection && thankYouSection) {
-        // Hide contact section
-        contactSection.style.display = 'none';
-        
-        // Show thank you section
-        thankYouSection.style.display = 'block';
-        
-        // Scroll to thank you section
-        thankYouSection.scrollIntoView({ behavior: 'smooth' });
-        
-        // Start countdown
-        startCountdown();
-    }
-}
-
-function showContactForm() {
-    const contactSection = document.getElementById('contact');
-    const thankYouSection = document.getElementById('thank-you');
-    
-    if (contactSection && thankYouSection) {
-        // Hide thank you section
-        thankYouSection.style.display = 'none';
-        
-        // Show contact section
-        contactSection.style.display = 'block';
-        
-        // Scroll to contact section
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-        
-        // Reset form
-        const form = document.querySelector('form[name="contact"]');
-        if (form) {
-            form.reset();
-            clearFormValidation();
-        }
-    }
-}
-
-function startCountdown() {
-    let timeLeft = 10;
-    const countdownElement = document.getElementById('countdown');
-    
-    if (countdownElement) {
-        const countdown = setInterval(() => {
-            timeLeft--;
-            countdownElement.textContent = timeLeft;
-            
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                showContactForm();
-            }
-        }, 1000);
-    }
-}
