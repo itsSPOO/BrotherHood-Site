@@ -824,7 +824,7 @@ window.testThankYouPage = function() {
     showThankYouPage();
 };
 
-// Close thank you page with ESC key
+// Close thank you page with ESC key or clicking outside
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const thankYouSection = document.getElementById('thank-you');
@@ -834,31 +834,30 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// Close thank you page when clicking outside the content
+document.addEventListener('click', function(e) {
+    const thankYouSection = document.getElementById('thank-you');
+    if (thankYouSection && thankYouSection.classList.contains('show')) {
+        if (e.target === thankYouSection) {
+            showContactForm();
+        }
+    }
+});
+
 // Thank You Page Functions
 function showThankYouPage() {
     console.log('showThankYouPage called'); // Debug log
     
-    // Hide contact section
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-        console.log('Hiding contact section'); // Debug log
-        contactSection.style.display = 'none';
-    } else {
-        console.log('Contact section not found'); // Debug log
-    }
-    
-    // Show thank you section
+    // Show thank you section as overlay
     const thankYouSection = document.getElementById('thank-you');
     if (thankYouSection) {
         console.log('Showing thank you section'); // Debug log
         thankYouSection.classList.add('show');
-        // No need for scrollIntoView since it's fixed positioned
+        // Prevent body scroll when overlay is open
+        document.body.style.overflow = 'hidden';
     } else {
         console.log('Thank you section not found'); // Debug log
     }
-    
-    // Update navigation
-    updateNavigationForThankYou();
 }
 
 function showContactForm() {
@@ -868,49 +867,16 @@ function showContactForm() {
         thankYouSection.classList.remove('show');
     }
     
-    // Show contact section
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+    
+    // Scroll to contact section
     const contactSection = document.getElementById('contact');
     if (contactSection) {
-        contactSection.style.display = 'block';
         contactSection.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'start' 
         });
     }
-    
-    // Reset navigation
-    resetNavigation();
 }
 
-function updateNavigationForThankYou() {
-    // Update active navigation link
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === '#contact') {
-            link.classList.add('active');
-        }
-    });
-}
-
-function resetNavigation() {
-    // Reset navigation to normal behavior
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
-        }
-    });
-
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-}
