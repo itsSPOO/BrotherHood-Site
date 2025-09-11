@@ -310,6 +310,7 @@ if (contactForm) {
         }, 1000);
     });
     
+    // Formspree will now redirect to thank-you.html automatically
     
 }
 
