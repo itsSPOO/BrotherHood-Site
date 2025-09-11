@@ -35,6 +35,8 @@
     <!-- Preload critical resources -->
     <link rel="preload" href="css/style.css" as="style">
     <link rel="preload" href="js/script.js" as="script">
+    <link rel="preload" href="images/hero-bg.jpg" as="image">
+    <link rel="preload" href="images/logo.png" as="image">
 </head>
 <body>
     <!-- Header -->
@@ -70,7 +72,7 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <h1 class="hero-title" data-en="Welcome to BrotherHood" data-ar="مرحباً بك في BrotherHood">Welcome to BrotherHood</h1>
-            <p class="hero-subtitle" data-en="The Best RolePlay Server in Morocco" data-ar="خادم الأدوار الأفضل في المغرب العربي">The Best RolePlay Server in Morocco</p>
+            <p class="hero-subtitle" data-en="The Best QBCore RolePlay Server in Morocco" data-ar="خادم الأدوار QBCore الأفضل في المغرب العربي">The Best QBCore RolePlay Server in Morocco</p>
             <div class="hero-stats">
                 <div class="stat">
                     <i class="fas fa-users"></i>
@@ -450,6 +452,20 @@
             </div>
         </div>
     </footer>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <img src="images/logo.png" alt="BrotherHood Logo" class="loading-logo-img">
+                <h2 class="loading-title">BrotherHood</h2>
+            </div>
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <p class="loading-text" data-en="Loading..." data-ar="جاري التحميل...">Loading...</p>
+        </div>
+    </div>
 
     <script src="js/script.js"></script>
 </body>

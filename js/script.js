@@ -163,11 +163,40 @@ function checkServerStatus() {
 
 // Player count updater
 function updatePlayerCount() {
-    const playerCount = Math.floor(Math.random() * 48) + 1;
+    // More realistic player count simulation
+    const baseCount = 25; // Base online players
+    const randomVariation = Math.floor(Math.random() * 20) + 1; // 1-20 additional players
+    const playerCount = Math.min(baseCount + randomVariation, 48); // Cap at 48
+    
     const playerCountElement = document.querySelector('.stat-number');
     if (playerCountElement) {
-        playerCountElement.textContent = playerCount;
+        // Smooth animation for count change
+        const currentCount = parseInt(playerCountElement.textContent) || 0;
+        animateCount(playerCountElement, currentCount, playerCount, 1000);
     }
+}
+
+// Animate number counting
+function animateCount(element, start, end, duration) {
+    const startTime = performance.now();
+    const difference = end - start;
+    
+    function updateCount(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(start + (difference * easeOut));
+        
+        element.textContent = current;
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCount);
+        }
+    }
+    
+    requestAnimationFrame(updateCount);
 }
 
 // Contact form handling
@@ -600,8 +629,27 @@ document.querySelectorAll('a[href^="fivem://"]').forEach(link => {
     });
 });
 
+// Loading screen management
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        // Remove from DOM after animation
+        setTimeout(() => {
+            if (loadingScreen.parentNode) {
+                loadingScreen.remove();
+            }
+        }, 500);
+    }
+}
+
 // Loading animation
 window.addEventListener('load', () => {
+    // Hide loading screen after a short delay
+    setTimeout(() => {
+        hideLoadingScreen();
+    }, 1500);
+    
     document.body.classList.add('loaded');
     
     // Initialize server status
@@ -718,14 +766,16 @@ document.head.appendChild(activeLinkStyle);
 
 // Server information display
 const serverInfo = {
-    name: 'BrotherHood',
+    name: 'BrotherHood RolePlay',
     ip: 'cfx.re/join/6gd4kj',
     maxPlayers: 48,
     framework: 'QBCore',
-    version: '1.3.0',
+    version: '1.4.0',
     developer: 'SPOO',
     discord: 'https://discord.gg/hh4YygkeNQ',
-    status: 'online'
+    status: 'online',
+    uptime: '99.9%',
+    lastRestart: '24 hours ago'
 };
 
 // Display server info in console
