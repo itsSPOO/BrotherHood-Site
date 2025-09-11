@@ -352,6 +352,20 @@
         // Initialize language switcher
         languageSwitcher.init();
 
+        // Load form submission data
+        const formData = localStorage.getItem('formSubmission');
+        if (formData) {
+            try {
+                const data = JSON.parse(formData);
+                // You can use the form data here if needed
+                console.log('Form submission data:', data);
+                // Clear the data after use
+                localStorage.removeItem('formSubmission');
+            } catch (e) {
+                console.log('No form data found');
+            }
+        }
+
         // Countdown timer
         let timeLeft = 10;
         const countdownElement = document.getElementById('countdown');

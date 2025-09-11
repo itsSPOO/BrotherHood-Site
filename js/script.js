@@ -294,20 +294,53 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
-        // Let the form submit normally to Formspree
-        // The form will handle the submission and redirect
-        // We'll show a success message after a delay
+        // Store form data for thank you page
+        localStorage.setItem('formSubmission', JSON.stringify({
+            name: name,
+            email: email,
+            message: message,
+            timestamp: new Date().toISOString()
+        }));
         
-        setTimeout(() => {
-            const successMessage = currentLanguage === 'ar' 
-                ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                : 'Your message has been sent successfully! We will contact you soon.';
-            showNotification(successMessage, 'success');
+        // Prevent default form submission and handle it manually
+        e.preventDefault();
+        
+        // Submit form data to Formspree using fetch
+        const formData = new FormData(contactForm);
+        
+        fetch('https://formspree.io/f/mrbajdpl', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                const successMessage = currentLanguage === 'ar' 
+                    ? 'تم إرسال رسالتك بنجاح! سيتم توجيهك لصفحة الشكر...' 
+                    : 'Your message has been sent successfully! Redirecting to thank you page...';
+                showNotification(successMessage, 'success');
+                
+                // Redirect to thank you page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'thank-you.html';
+                }, 2000);
+            } else {
+                throw new Error('Form submission failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.' 
+                : 'An error occurred while sending the message. Please try again.';
+            showNotification(errorMessage, 'error');
             
             // Reset button state
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
-        }, 1000);
+        });
     });
     
     // Formspree will now redirect to thank-you.html automatically
