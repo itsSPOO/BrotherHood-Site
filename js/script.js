@@ -8,8 +8,7 @@ const languageSwitcher = {
     },
     
     bindEvents() {
-        const langButtons = document.querySelectorAll('.lang-btn');
-        langButtons.forEach(btn => {
+        document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const lang = e.target.getAttribute('data-lang');
                 this.switchLanguage(lang);
@@ -25,98 +24,53 @@ const languageSwitcher = {
         
         // Update active button
         document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-lang') === lang) {
-                btn.classList.add('active');
-            }
+            btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
         });
         
         // Update all text content
         this.updateTextContent();
-        
-        // Save language preference
         localStorage.setItem('preferred-language', lang);
     },
     
     updateTextContent() {
-        const elements = document.querySelectorAll('[data-en][data-ar]');
-        elements.forEach(element => {
+        document.querySelectorAll('[data-en][data-ar]').forEach(element => {
             const text = element.getAttribute(`data-${currentLanguage}`);
-            if (text) {
-                element.textContent = text;
-            }
+            if (text) element.textContent = text;
         });
         
         // Update placeholders
-        const inputs = document.querySelectorAll('input[data-ar-placeholder], textarea[data-ar-placeholder]');
-        inputs.forEach(input => {
+        document.querySelectorAll('input[data-ar-placeholder], textarea[data-ar-placeholder]').forEach(input => {
             const placeholder = input.getAttribute(`data-${currentLanguage}-placeholder`);
-            if (placeholder) {
-                input.placeholder = placeholder;
-            }
+            if (placeholder) input.placeholder = placeholder;
         });
-        
-        // Update server info
-        this.updateServerInfo();
-    },
-    
-    updateServerInfo() {
-        const serverInfoElement = document.querySelector('.server-info');
-        if (serverInfoElement) {
-            const serverInfoContent = serverInfoElement.querySelector('.server-info-content');
-            if (serverInfoContent) {
-                if (currentLanguage === 'ar') {
-                    serverInfoContent.innerHTML = `
-                        <h4>معلومات الخادم</h4>
-                        <p><strong>الاسم:</strong> ${serverInfo.name}</p>
-                        <p><strong>العنوان:</strong> ${serverInfo.ip}</p>
-                        <p><strong>الحد الأقصى:</strong> ${serverInfo.maxPlayers} لاعب</p>
-                        <p><strong>الإطار:</strong> ${serverInfo.framework} ${serverInfo.version}</p>
-                        <p><strong>المطور:</strong> ${serverInfo.developer}</p>
-                        <p><strong>الحالة:</strong> <span class="status-online">متصل</span></p>
-                    `;
-                } else {
-                    serverInfoContent.innerHTML = `
-                        <h4>Server Information</h4>
-                        <p><strong>Name:</strong> ${serverInfo.name}</p>
-                        <p><strong>Address:</strong> ${serverInfo.ip}</p>
-                        <p><strong>Max Players:</strong> ${serverInfo.maxPlayers}</p>
-                        <p><strong>Framework:</strong> ${serverInfo.framework} ${serverInfo.version}</p>
-                        <p><strong>Developer:</strong> ${serverInfo.developer}</p>
-                        <p><strong>Status:</strong> <span class="status-online">Online</span></p>
-                    `;
-                }
-            }
-        }
     },
     
     loadLanguage() {
         const savedLang = localStorage.getItem('preferred-language');
-        if (savedLang && (savedLang === 'en' || savedLang === 'ar')) {
-            this.switchLanguage(savedLang);
-        } else {
-            this.switchLanguage('en'); // Default to English
-        }
+        this.switchLanguage(savedLang === 'ar' ? 'ar' : 'en');
     }
 };
 
-// Initialize language switcher
 languageSwitcher.init();
 
 // Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
 
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
+    });
+}
 
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -198,10 +152,8 @@ document.querySelectorAll('.feature-card, .job-card, .rule-category').forEach(el
     observer.observe(el);
 });
 
-// Server status checker (mock function)
+// Server status checker
 function checkServerStatus() {
-    // This would normally make an API call to check server status
-    // For now, we'll simulate it
     const statusElement = document.querySelector('.server-status');
     if (statusElement) {
         const statusText = currentLanguage === 'ar' ? 'متصل' : 'Online';
@@ -209,10 +161,8 @@ function checkServerStatus() {
     }
 }
 
-// Player count updater (mock function)
+// Player count updater
 function updatePlayerCount() {
-    // This would normally fetch real player count
-    // For now, we'll simulate it
     const playerCount = Math.floor(Math.random() * 48) + 1;
     const playerCountElement = document.querySelector('.stat-number');
     if (playerCountElement) {
@@ -296,45 +246,12 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
-        // Prevent form submission and handle it manually
-        e.preventDefault();
+        // Let the form submit naturally to FormSubmit
+        // The form will redirect to the thank you page after successful submission
+        console.log('Form validation passed, submitting to FormSubmit'); // Debug log
         
-        console.log('Form submission prevented, starting API call'); // Debug log
-        
-        // Simulate form submission (no actual server call)
-        const formData = new FormData(contactForm);
-        
-        // Simulate API call
-        new Promise((resolve) => {
-            setTimeout(() => resolve({ ok: true }), 1000);
-        })
-        .then(response => {
-            console.log('Form submission response:', response); // Debug log
-            if (response.ok) {
-                console.log('Response is ok, showing thank you page'); // Debug log
-                // Show thank you page instead of notification
-                showThankYouPage();
-                
-                // Reset form
-                contactForm.reset();
-                clearFormValidation();
-            } else {
-                console.log('Response not ok'); // Debug log
-                throw new Error('Form submission failed');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const errorMessage = currentLanguage === 'ar' 
-                ? 'حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.' 
-                : 'An error occurred while sending the message. Please try again.';
-            showNotification(errorMessage, 'error');
-        })
-        .finally(() => {
-            // Reset button state
-            submitButton.disabled = false;
-            submitButton.innerHTML = originalButtonText;
-        });
+        // The form will now submit to FormSubmit and redirect to thank you page
+        // No need to prevent default or handle manually
     });
     
     // Form submission is now handled entirely in JavaScript
@@ -646,6 +563,11 @@ window.addEventListener('load', () => {
     
     // Update player count every 30 seconds
     setInterval(updatePlayerCount, 30000);
+    
+    // Check if we should show thank you page (for FormSubmit redirect)
+    if (window.location.hash === '#thank-you') {
+        showThankYouPage();
+    }
 });
 
 // Add loading styles
@@ -728,7 +650,7 @@ window.addEventListener('scroll', addActiveClass);
 const activeLinkStyle = document.createElement('style');
 activeLinkStyle.textContent = `
     .nav-link.active {
-        color: #ffd700 !important;
+        color: var(--primary-color) !important;
     }
     
     .nav-link.active::after {
@@ -800,7 +722,7 @@ const addServerInfo = () => {
         }
         
         .server-info h4 {
-            color: #ffd700;
+            color: var(--primary-color);
             margin-bottom: 0.5rem;
         }
         
