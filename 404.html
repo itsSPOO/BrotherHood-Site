@@ -143,6 +143,17 @@
     </div>
 
     <script>
+        // SPA routing for GitHub Pages
+        // Check if this is a 404 error or a direct navigation
+        const path = window.location.pathname;
+        
+        // If it's not actually a 404, redirect to main page
+        if (path !== '/404.html' && path !== '/404') {
+            // This is likely a SPA route, redirect to main page
+            window.location.href = '/';
+            return;
+        }
+        
         // Language switcher for 404 page
         let currentLanguage = 'en';
         

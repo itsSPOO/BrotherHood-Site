@@ -44,14 +44,33 @@ website/
 
 ## 🚀 How to Use
 
-### 1. Upload Website
+### 1. Deploy to GitHub Pages
 ```bash
-# Upload files to web server
-# Or use GitHub Pages
-# Or any free hosting service
+# 1. Create a new repository on GitHub
+# 2. Upload all files to the repository
+# 3. Go to Settings > Pages
+# 4. Select "Deploy from a branch"
+# 5. Choose "main" branch
+# 6. Click Save
+# 7. Wait a few minutes for deployment
 ```
 
-### 2. Add Images
+### 2. Upload to Other Hosting
+```bash
+# Upload files to any web server
+# Or use any free hosting service
+```
+
+### 3. Setup Formspree (Contact Form)
+```bash
+# 1. Go to https://formspree.io
+# 2. Create a new account
+# 3. Create a new form
+# 4. Copy the form ID
+# 5. Replace 'mrbajdpl' in index.html and js/script.js with your form ID
+```
+
+### 4. Add Images
 - Place BrotherHood logo in `images/logo.png`
 - Place hero background in `images/hero-bg.jpg`
 - Place about section image in `images/about.png`

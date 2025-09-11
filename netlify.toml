@@ -1,16 +1,3 @@
-[build]
-  publish = "."
-
-[build.environment]
-  NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[context.production]
-  command = "echo 'No build command needed for static site'"
-
-[context.deploy-preview]
-  command = "echo 'No build command needed for static site'"
+# GitHub Pages configuration
+# This file is kept for reference but GitHub Pages doesn't use netlify.toml
+# For GitHub Pages, use 404.html for SPA routing instead
