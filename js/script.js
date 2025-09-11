@@ -227,6 +227,7 @@ if (contactForm) {
     const submitButton = contactForm.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.innerHTML;
     
+    
     // Set up replyto field
     const replytoField = contactForm.querySelector('input[name="_replyto"]');
     const emailField = contactForm.querySelector('input[name="email"]');
@@ -238,7 +239,10 @@ if (contactForm) {
     }
     
     contactForm.addEventListener('submit', async (e) => {
-        // Get form data first
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(contactForm);
         const name = contactForm.querySelector('input[name="name"]').value.trim();
         const email = contactForm.querySelector('input[name="email"]').value.trim();
         const message = contactForm.querySelector('textarea[name="message"]').value.trim();
@@ -283,7 +287,6 @@ if (contactForm) {
         }
         
         if (hasErrors) {
-            e.preventDefault();
             return;
         }
         
@@ -293,54 +296,53 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
-        // Try JavaScript submission first, but don't prevent default form submission
         try {
-            const formData = new FormData(contactForm);
-            
-            // Use a simple fetch without complex error handling
-            fetch('https://formspree.io/f/mrbajdpl', {
+            // Submit form to Formspree
+            const response = await fetch('https://formspree.io/f/mrbajdpl', {
                 method: 'POST',
                 body: formData
-            }).then(response => {
-                if (response.ok) {
-                    // Show success notification
-                    const successMessage = currentLanguage === 'ar' 
-                        ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                        : 'Your message has been sent successfully! We will contact you soon.';
-                    showNotification(successMessage, 'success');
-                    contactForm.reset();
-                }
-            }).catch(error => {
-                console.log('JavaScript submission failed, form will submit normally');
             });
             
-            // Allow form to submit normally as backup
-            // Don't prevent default - let the form work normally
-            
+            if (response.ok) {
+                const successMessage = currentLanguage === 'ar' 
+                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                    : 'Your message has been sent successfully! We will contact you soon.';
+                showNotification(successMessage, 'success');
+                contactForm.reset();
+            } else {
+                const errorText = await response.text();
+                console.error('Form submission failed:', response.status, errorText);
+                
+                let errorMessage;
+                if (response.status === 422) {
+                    errorMessage = currentLanguage === 'ar' 
+                        ? 'يرجى التحقق من صحة البيانات المدخلة' 
+                        : 'Please check your input data';
+                } else if (response.status === 429) {
+                    errorMessage = currentLanguage === 'ar' 
+                        ? 'تم إرسال رسائل كثيرة. يرجى المحاولة لاحقاً' 
+                        : 'Too many requests. Please try again later';
+                } else {
+                    errorMessage = currentLanguage === 'ar' 
+                        ? 'حدث خطأ في الخادم. يرجى المحاولة مرة أخرى' 
+                        : 'Server error. Please try again';
+                }
+                
+                showNotification(errorMessage, 'error');
+            }
         } catch (error) {
-            console.log('JavaScript error, form will submit normally');
-        }
-        
-        // Reset button state after a short delay
-        setTimeout(() => {
+            console.error('Form submission error:', error);
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'حدث خطأ في الاتصال. يرجى التحقق من الإنترنت والمحاولة مرة أخرى' 
+                : 'Connection error. Please check your internet and try again';
+            showNotification(errorMessage, 'error');
+        } finally {
+            // Reset button state
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
-        }, 2000);
+        }
     });
     
-    
-    // Add a simple success check after form submission
-    // This handles cases where Formspree redirects back to the page
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('form') === 'success' || urlParams.get('success') === 'true') {
-        const successMessage = currentLanguage === 'ar' 
-            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-            : 'Your message has been sent successfully! We will contact you soon.';
-        showNotification(successMessage, 'success');
-        
-        // Clean up URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
 }
 
 // Form validation helpers
