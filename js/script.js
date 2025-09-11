@@ -566,8 +566,18 @@ window.addEventListener('load', () => {
     
     // Check if we should show thank you page (for FormSubmit redirect)
     if (window.location.hash === '#thank-you') {
-        showThankYouPage();
+        // Add a small delay to ensure page is fully loaded
+        setTimeout(() => {
+            showThankYouPage();
+        }, 500);
     }
+    
+    // Also check on hash change (in case user navigates directly)
+    window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#thank-you') {
+            showThankYouPage();
+        }
+    });
 });
 
 // Add loading styles
