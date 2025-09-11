@@ -306,10 +306,8 @@ if (contactForm) {
         })
         .then(response => {
             if (response.ok) {
-                const successMessage = currentLanguage === 'ar' 
-                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                    : 'Your message has been sent successfully! We will contact you soon.';
-                showNotification(successMessage, 'success');
+                // Show thank you page instead of notification
+                showThankYouPage();
                 
                 // Reset form
                 contactForm.reset();
@@ -833,3 +831,79 @@ const addServerInfo = () => {
 
 // Initialize server info
 addServerInfo();
+
+// Thank You Page Functions
+function showThankYouPage() {
+    // Hide contact section
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        contactSection.style.display = 'none';
+    }
+    
+    // Show thank you section
+    const thankYouSection = document.getElementById('thank-you');
+    if (thankYouSection) {
+        thankYouSection.style.display = 'block';
+        thankYouSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+    
+    // Update navigation
+    updateNavigationForThankYou();
+}
+
+function showContactForm() {
+    // Hide thank you section
+    const thankYouSection = document.getElementById('thank-you');
+    if (thankYouSection) {
+        thankYouSection.style.display = 'none';
+    }
+    
+    // Show contact section
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        contactSection.style.display = 'block';
+        contactSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+    
+    // Reset navigation
+    resetNavigation();
+}
+
+function updateNavigationForThankYou() {
+    // Update active navigation link
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#contact') {
+            link.classList.add('active');
+        }
+    });
+}
+
+function resetNavigation() {
+    // Reset navigation to normal behavior
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= (sectionTop - 200)) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
+    });
+}
