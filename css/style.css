@@ -948,12 +948,16 @@ body[lang="ar"] .footer-content {
 .thank-you {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
+    display: none; /* Hidden by default */
     align-items: center;
     justify-content: center;
     padding: 100px 0;
     position: relative;
     overflow: hidden;
+}
+
+.thank-you.show {
+    display: flex !important;
 }
 
 .thank-you::before {

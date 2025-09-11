@@ -288,6 +288,8 @@ if (contactForm) {
             return;
         }
         
+        console.log('Form validation passed, proceeding with submission'); // Debug log
+        
         // Show loading state
         submitButton.disabled = true;
         submitButton.innerHTML = currentLanguage === 'ar' 
@@ -297,6 +299,8 @@ if (contactForm) {
         // Prevent form submission and handle it manually
         e.preventDefault();
         
+        console.log('Form submission prevented, starting API call'); // Debug log
+        
         // Simulate form submission (no actual server call)
         const formData = new FormData(contactForm);
         
@@ -305,7 +309,9 @@ if (contactForm) {
             setTimeout(() => resolve({ ok: true }), 1000);
         })
         .then(response => {
+            console.log('Form submission response:', response); // Debug log
             if (response.ok) {
+                console.log('Response is ok, showing thank you page'); // Debug log
                 // Show thank you page instead of notification
                 showThankYouPage();
                 
@@ -313,6 +319,7 @@ if (contactForm) {
                 contactForm.reset();
                 clearFormValidation();
             } else {
+                console.log('Response not ok'); // Debug log
                 throw new Error('Form submission failed');
             }
         })
@@ -832,22 +839,36 @@ const addServerInfo = () => {
 // Initialize server info
 addServerInfo();
 
+// Test function to show thank you page (for debugging)
+window.testThankYouPage = function() {
+    console.log('Testing thank you page...');
+    showThankYouPage();
+};
+
 // Thank You Page Functions
 function showThankYouPage() {
+    console.log('showThankYouPage called'); // Debug log
+    
     // Hide contact section
     const contactSection = document.getElementById('contact');
     if (contactSection) {
+        console.log('Hiding contact section'); // Debug log
         contactSection.style.display = 'none';
+    } else {
+        console.log('Contact section not found'); // Debug log
     }
     
     // Show thank you section
     const thankYouSection = document.getElementById('thank-you');
     if (thankYouSection) {
-        thankYouSection.style.display = 'block';
+        console.log('Showing thank you section'); // Debug log
+        thankYouSection.classList.add('show');
         thankYouSection.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'start' 
         });
+    } else {
+        console.log('Thank you section not found'); // Debug log
     }
     
     // Update navigation
@@ -858,7 +879,7 @@ function showContactForm() {
     // Hide thank you section
     const thankYouSection = document.getElementById('thank-you');
     if (thankYouSection) {
-        thankYouSection.style.display = 'none';
+        thankYouSection.classList.remove('show');
     }
     
     // Show contact section
