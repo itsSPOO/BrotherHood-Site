@@ -294,33 +294,48 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
-        // Let the form submit normally to Formspree
-        // The form will handle the submission and redirect
-        // We'll show a success message after a delay
+        // Prevent form submission and handle it manually
+        e.preventDefault();
         
-        setTimeout(() => {
-            const successMessage = currentLanguage === 'ar' 
-                ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                : 'Your message has been sent successfully! We will contact you soon.';
-            showNotification(successMessage, 'success');
-            
+        // Submit form data to Formspree using fetch (in background)
+        const formData = new FormData(contactForm);
+        
+        fetch('https://formspree.io/f/mrbajdpl', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                const successMessage = currentLanguage === 'ar' 
+                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                    : 'Your message has been sent successfully! We will contact you soon.';
+                showNotification(successMessage, 'success');
+                
+                // Reset form
+                contactForm.reset();
+                clearFormValidation();
+            } else {
+                throw new Error('Form submission failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.' 
+                : 'An error occurred while sending the message. Please try again.';
+            showNotification(errorMessage, 'error');
+        })
+        .finally(() => {
             // Reset button state
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
-        }, 1000);
+        });
     });
     
-    // Check for success when returning from Formspree
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('success') === 'true' || urlParams.get('form') === 'success') {
-        const successMessage = currentLanguage === 'ar' 
-            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-            : 'Your message has been sent successfully! We will contact you soon.';
-        showNotification(successMessage, 'success');
-        
-        // Clean up URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
+    // Form submission is now handled entirely in JavaScript
     
 }
 
