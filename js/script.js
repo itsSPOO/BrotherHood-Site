@@ -845,6 +845,16 @@ window.testThankYouPage = function() {
     showThankYouPage();
 };
 
+// Close thank you page with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const thankYouSection = document.getElementById('thank-you');
+        if (thankYouSection && thankYouSection.classList.contains('show')) {
+            showContactForm();
+        }
+    }
+});
+
 // Thank You Page Functions
 function showThankYouPage() {
     console.log('showThankYouPage called'); // Debug log
@@ -863,10 +873,7 @@ function showThankYouPage() {
     if (thankYouSection) {
         console.log('Showing thank you section'); // Debug log
         thankYouSection.classList.add('show');
-        thankYouSection.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
-        });
+        // No need for scrollIntoView since it's fixed positioned
     } else {
         console.log('Thank you section not found'); // Debug log
     }
