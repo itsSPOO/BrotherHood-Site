@@ -1,5 +1,5 @@
-# Netlify Forms redirects
+# GitHub Pages redirects for SPA
 /*    /index.html   200
 
-# Handle form submissions
-/contact    /index.html   200
+# Handle form submissions and thank you page
+/thank-you    /thank-you.html   200

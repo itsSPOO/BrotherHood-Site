@@ -286,19 +286,21 @@ if (contactForm) {
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
         try {
-            // Submit form to Netlify
-            const response = await fetch('/', {
+            // Submit form to Formspree
+            const response = await fetch('https://formspree.io/f/mrbajdpl', {
                 method: 'POST',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString()
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    message: message,
+                    _subject: 'New Contact Form Submission from BrotherHood Website'
+                })
             });
             
             if (response.ok) {
-                const successMessage = currentLanguage === 'ar' 
-                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                    : 'Your message has been sent successfully! We will contact you soon.';
-                showNotification(successMessage, 'success');
-                contactForm.reset();
+                // Redirect to thank you page
+                window.location.href = 'thank-you.html';
             } else {
                 throw new Error('Form submission failed');
             }
