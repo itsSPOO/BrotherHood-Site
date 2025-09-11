@@ -312,8 +312,12 @@ if (contactForm) {
             });
             
             if (response.ok) {
-                // Redirect to thank you page
-                window.location.href = 'thank-you.html';
+                // Show success notification
+                const successMessage = currentLanguage === 'ar' 
+                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                    : 'Your message has been sent successfully! We will contact you soon.';
+                showNotification(successMessage, 'success');
+                contactForm.reset();
             } else {
                 const errorText = await response.text();
                 console.error('Form submission failed:', response.status, errorText);
@@ -465,8 +469,13 @@ function showNotification(message, type = 'info') {
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
         <div class="notification-content">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-            <span>${message}</span>
+            <div class="notification-icon">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            </div>
+            <div class="notification-text">
+                <div class="notification-title">${type === 'success' ? (currentLanguage === 'ar' ? 'نجح!' : 'Success!') : type === 'error' ? (currentLanguage === 'ar' ? 'خطأ!' : 'Error!') : (currentLanguage === 'ar' ? 'معلومة' : 'Info')}</div>
+                <div class="notification-message">${message}</div>
+            </div>
             <button class="notification-close">&times;</button>
         </div>
     `;
@@ -479,50 +488,97 @@ function showNotification(message, type = 'info') {
             top: 20px;
             right: 20px;
             z-index: 10000;
-            max-width: 400px;
-            animation: slideInRight 0.3s ease-out;
+            max-width: 450px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: 'Inter', 'Cairo', sans-serif;
         }
         
         .notification-content {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px 20px;
-            border-radius: 10px;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            border-radius: 15px;
             color: white;
             font-weight: 500;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .notification-icon {
+            font-size: 1.5rem;
+            margin-top: 2px;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .notification-message {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            opacity: 0.9;
         }
         
         .notification-success .notification-content {
-            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
         }
         
         .notification-error .notification-content {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
         }
         
         .notification-info .notification-content {
-            background: linear-gradient(45deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #3498db, #2980b9);
         }
         
         .notification-close {
-            background: none;
+            background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
             margin-left: auto;
+        }
+        
+        .notification-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
         }
         
         @keyframes slideInRight {
             from {
-                transform: translateX(100%);
+                transform: translateX(100%) scale(0.8);
                 opacity: 0;
             }
             to {
-                transform: translateX(0);
+                transform: translateX(0) scale(1);
                 opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%) scale(0.8);
+                opacity: 0;
             }
         }
         
@@ -531,6 +587,25 @@ function showNotification(message, type = 'info') {
                 right: 10px;
                 left: 10px;
                 max-width: none;
+            }
+            
+            .notification-content {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .notification-content {
+                padding: 12px;
+                gap: 10px;
+            }
+            
+            .notification-title {
+                font-size: 1rem;
+            }
+            
+            .notification-message {
+                font-size: 0.9rem;
             }
         }
     `;
@@ -542,17 +617,17 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Auto remove after 5 seconds
+    // Auto remove after 6 seconds
     setTimeout(() => {
         if (notification.parentNode) {
-            notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+            notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
             setTimeout(() => notification.remove(), 300);
         }
-    }, 5000);
+    }, 6000);
     
     // Close button functionality
     notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+        notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
         setTimeout(() => notification.remove(), 300);
     });
 }
