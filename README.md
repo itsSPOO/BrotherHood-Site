@@ -144,6 +144,6 @@ All rights reserved to developer SPOO.
 
 ---
 
-**Website Created by:** AI Assistant  
-**Creation Date:** 2024  
-**Version:** 2.0.0 (Bilingual)
+**Website Created by:** SPOO  
+**Creation Date:** 2025  
+**Version:** 1.1.0 (Bilingual)
