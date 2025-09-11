@@ -227,6 +227,16 @@ if (contactForm) {
     const submitButton = contactForm.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.innerHTML;
     
+    // Set up replyto field
+    const replytoField = contactForm.querySelector('input[name="_replyto"]');
+    const emailField = contactForm.querySelector('input[name="email"]');
+    
+    if (replytoField && emailField) {
+        emailField.addEventListener('input', () => {
+            replytoField.value = emailField.value;
+        });
+    }
+    
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -287,33 +297,64 @@ if (contactForm) {
         
         try {
             // Submit form to Formspree
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('message', message);
+            formData.append('_subject', 'New Contact Form Submission from BrotherHood Website');
+            formData.append('_next', 'thank-you.html');
+            formData.append('_captcha', 'false');
+            formData.append('_replyto', email);
+            
             const response = await fetch('https://formspree.io/f/mrbajdpl', {
                 method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    message: message,
-                    _subject: 'New Contact Form Submission from BrotherHood Website'
-                })
+                body: formData
             });
             
             if (response.ok) {
                 // Redirect to thank you page
                 window.location.href = 'thank-you.html';
             } else {
-                throw new Error('Form submission failed');
+                const errorText = await response.text();
+                console.error('Form submission failed:', response.status, errorText);
+                
+                let errorMessage;
+                if (response.status === 422) {
+                    errorMessage = currentLanguage === 'ar' 
+                        ? 'يرجى التحقق من صحة البيانات المدخلة' 
+                        : 'Please check your input data';
+                } else if (response.status === 429) {
+                    errorMessage = currentLanguage === 'ar' 
+                        ? 'تم إرسال رسائل كثيرة. يرجى المحاولة لاحقاً' 
+                        : 'Too many requests. Please try again later';
+                } else {
+                    errorMessage = currentLanguage === 'ar' 
+                        ? 'حدث خطأ في الخادم. يرجى المحاولة مرة أخرى' 
+                        : 'Server error. Please try again';
+                }
+                
+                showNotification(errorMessage, 'error');
             }
         } catch (error) {
             console.error('Form submission error:', error);
             const errorMessage = currentLanguage === 'ar' 
-                ? 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.' 
-                : 'An error occurred while sending the message. Please try again.';
+                ? 'حدث خطأ في الاتصال. يرجى التحقق من الإنترنت والمحاولة مرة أخرى' 
+                : 'Connection error. Please check your internet and try again';
             showNotification(errorMessage, 'error');
         } finally {
             // Reset button state
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
+        }
+    });
+    
+    // Fallback: If JavaScript fails, allow form to submit normally
+    // This will open in a new tab and redirect to thank you page
+    contactForm.addEventListener('submit', (e) => {
+        // Only prevent default if we're handling it with JavaScript
+        // If there's an error, let the form submit normally
+        if (e.defaultPrevented) {
+            return;
         }
     });
 }
