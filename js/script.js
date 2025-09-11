@@ -296,21 +296,17 @@ if (contactForm) {
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
         try {
-            // Submit form to Formspree
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('email', email);
-            formData.append('message', message);
-            formData.append('_subject', 'New Contact Form Submission from BrotherHood Website');
-            formData.append('_next', 'thank-you.html');
-            formData.append('_captcha', 'false');
-            formData.append('_replyto', email);
+            // Submit form to Formspree using FormData
+            const formData = new FormData(contactForm);
             
             const response = await fetch('https://formspree.io/f/mrbajdpl', {
                 method: 'POST',
                 body: formData
             });
             
+            console.log('Formspree response status:', response.status);
+            
+            // Formspree typically returns 200 for successful submissions
             if (response.ok) {
                 // Show success notification
                 const successMessage = currentLanguage === 'ar' 
@@ -319,9 +315,7 @@ if (contactForm) {
                 showNotification(successMessage, 'success');
                 contactForm.reset();
             } else {
-                const errorText = await response.text();
-                console.error('Form submission failed:', response.status, errorText);
-                
+                // Handle different error cases
                 let errorMessage;
                 if (response.status === 422) {
                     errorMessage = currentLanguage === 'ar' 
@@ -353,7 +347,7 @@ if (contactForm) {
     });
     
     // Fallback: If JavaScript fails, allow form to submit normally
-    // This will open in a new tab and redirect to thank you page
+    // This will open in a new tab and redirect to main page
     contactForm.addEventListener('submit', (e) => {
         // Only prevent default if we're handling it with JavaScript
         // If there's an error, let the form submit normally
@@ -361,6 +355,19 @@ if (contactForm) {
             return;
         }
     });
+    
+    // Add a simple success check after form submission
+    // This handles cases where Formspree redirects back to the page
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('form') === 'success' || urlParams.get('success') === 'true') {
+        const successMessage = currentLanguage === 'ar' 
+            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+            : 'Your message has been sent successfully! We will contact you soon.';
+        showNotification(successMessage, 'success');
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
 }
 
 // Form validation helpers
