@@ -946,7 +946,7 @@ body[lang="ar"] .footer-content {
 
 /* Thank You Page Styles */
 .thank-you {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
     min-height: 100vh;
     display: none; /* Hidden by default */
     align-items: center;
@@ -982,12 +982,12 @@ body[lang="ar"] .footer-content {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(220,38,38,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(220,38,38,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(220,38,38,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(220,38,38,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(220,38,38,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
     opacity: 0.3;
 }
 
 .thank-you-content {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(15, 15, 35, 0.95);
     backdrop-filter: blur(20px);
     border-radius: 30px;
     padding: 60px 40px;
@@ -995,8 +995,8 @@ body[lang="ar"] .footer-content {
     max-width: 800px;
     width: 100%;
     margin: 0 auto;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 50px rgba(220, 38, 38, 0.1);
+    border: 2px solid rgba(220, 38, 38, 0.3);
     position: relative;
     z-index: 1;
     animation: slideInUp 0.8s ease-out;
@@ -1006,9 +1006,9 @@ body[lang="ar"] .footer-content {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: #666;
+    background: rgba(220, 38, 38, 0.2);
+    border: 2px solid rgba(220, 38, 38, 0.3);
+    color: #dc2626;
     font-size: 1.5rem;
     width: 40px;
     height: 40px;
@@ -1022,33 +1022,32 @@ body[lang="ar"] .footer-content {
 }
 
 .close-thank-you:hover {
-    background: rgba(255, 255, 255, 0.3);
-    color: #333;
+    background: rgba(220, 38, 38, 0.3);
+    color: white;
     transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
 }
 
 .thank-you-icon {
     font-size: 5rem;
-    color: #27ae60;
+    color: #dc2626;
     margin-bottom: 2rem;
     animation: bounceIn 1s ease-out 0.3s both;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
 }
 
 .thank-you-title {
     font-size: 3rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: #dc2626;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
     animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
 .thank-you-message {
     font-size: 1.3rem;
-    color: #7f8c8d;
+    color: #e5e7eb;
     margin-bottom: 3rem;
     line-height: 1.6;
     animation: fadeInUp 0.8s ease-out 0.7s both;
@@ -1078,26 +1077,29 @@ body[lang="ar"] .footer-content {
 }
 
 .thank-you-actions .btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(45deg, #dc2626, #b91c1c);
     color: white;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+    border: 2px solid #dc2626;
 }
 
 .thank-you-actions .btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 12px 35px rgba(220, 38, 38, 0.4);
+    background: linear-gradient(45deg, #b91c1c, #991b1b);
 }
 
 .thank-you-actions .btn-secondary {
     background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
+    color: #dc2626;
+    border: 2px solid #dc2626;
 }
 
 .thank-you-actions .btn-secondary:hover {
-    background: #667eea;
+    background: #dc2626;
     color: white;
     transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
 }
 
 .thank-you-info {
@@ -1106,9 +1108,10 @@ body[lang="ar"] .footer-content {
 
 .thank-you-info h3 {
     font-size: 2rem;
-    color: #2c3e50;
+    color: #dc2626;
     margin-bottom: 2rem;
     font-weight: 600;
+    text-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
 }
 
 .info-cards {
@@ -1119,37 +1122,39 @@ body[lang="ar"] .footer-content {
 }
 
 .info-card {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(26, 26, 46, 0.8);
     padding: 2rem 1.5rem;
     border-radius: 20px;
     text-align: center;
     transition: all 0.3s ease;
-    border: 1px solid rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.2);
     backdrop-filter: blur(10px);
 }
 
 .info-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
-    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 15px 35px rgba(220, 38, 38, 0.2);
+    border-color: rgba(220, 38, 38, 0.4);
+    background: rgba(26, 26, 46, 0.9);
 }
 
 .info-card i {
     font-size: 2.5rem;
-    color: #667eea;
+    color: #dc2626;
     margin-bottom: 1rem;
     display: block;
+    text-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
 }
 
 .info-card h4 {
     font-size: 1.2rem;
-    color: #2c3e50;
+    color: #e5e7eb;
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
 
 .info-card p {
-    color: #7f8c8d;
+    color: #9ca3af;
     font-size: 0.95rem;
     line-height: 1.5;
 }
