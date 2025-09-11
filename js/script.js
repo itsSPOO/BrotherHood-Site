@@ -239,7 +239,8 @@ if (contactForm) {
     }
     
     contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        // Don't prevent default immediately - let the form work as fallback
+        // Only prevent if we're handling it with JavaScript
         
         // Get form data
         const formData = new FormData(contactForm);
@@ -287,6 +288,7 @@ if (contactForm) {
         }
         
         if (hasErrors) {
+            e.preventDefault();
             return;
         }
         
@@ -296,51 +298,40 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
+        // Try JavaScript submission first
         try {
-            // Submit form to Formspree
             const response = await fetch('https://formspree.io/f/mrbajdpl', {
                 method: 'POST',
                 body: formData
             });
             
+            console.log('Formspree response status:', response.status);
+            
+            // If successful, show success message
             if (response.ok) {
                 const successMessage = currentLanguage === 'ar' 
                     ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
                     : 'Your message has been sent successfully! We will contact you soon.';
                 showNotification(successMessage, 'success');
                 contactForm.reset();
+                e.preventDefault(); // Prevent form from submitting normally
             } else {
-                const errorText = await response.text();
-                console.error('Form submission failed:', response.status, errorText);
-                
-                let errorMessage;
-                if (response.status === 422) {
-                    errorMessage = currentLanguage === 'ar' 
-                        ? 'يرجى التحقق من صحة البيانات المدخلة' 
-                        : 'Please check your input data';
-                } else if (response.status === 429) {
-                    errorMessage = currentLanguage === 'ar' 
-                        ? 'تم إرسال رسائل كثيرة. يرجى المحاولة لاحقاً' 
-                        : 'Too many requests. Please try again later';
-                } else {
-                    errorMessage = currentLanguage === 'ar' 
-                        ? 'حدث خطأ في الخادم. يرجى المحاولة مرة أخرى' 
-                        : 'Server error. Please try again';
-                }
-                
-                showNotification(errorMessage, 'error');
+                // If JavaScript fails, let the form submit normally
+                console.log('JavaScript submission failed, allowing normal form submission');
+                // Don't prevent default - let form work normally
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            const errorMessage = currentLanguage === 'ar' 
-                ? 'حدث خطأ في الاتصال. يرجى التحقق من الإنترنت والمحاولة مرة أخرى' 
-                : 'Connection error. Please check your internet and try again';
-            showNotification(errorMessage, 'error');
-        } finally {
-            // Reset button state
+            // If there's any error, let the form submit normally
+            console.log('JavaScript error, allowing normal form submission');
+            // Don't prevent default - let form work normally
+        }
+        
+        // Reset button state after a short delay
+        setTimeout(() => {
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
-        }
+        }, 2000);
     });
     
 }
