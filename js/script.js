@@ -310,17 +310,6 @@ if (contactForm) {
         }, 1000);
     });
     
-    // Check for success when returning from Formspree
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('success') === 'true' || urlParams.get('form') === 'success') {
-        const successMessage = currentLanguage === 'ar' 
-            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-            : 'Your message has been sent successfully! We will contact you soon.';
-        showNotification(successMessage, 'success');
-        
-        // Clean up URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
     
 }
 
