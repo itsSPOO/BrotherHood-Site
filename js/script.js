@@ -238,10 +238,7 @@ if (contactForm) {
     }
     
     contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(contactForm);
+        // Get form data first
         const name = contactForm.querySelector('input[name="name"]').value.trim();
         const email = contactForm.querySelector('input[name="email"]').value.trim();
         const message = contactForm.querySelector('textarea[name="message"]').value.trim();
@@ -286,6 +283,7 @@ if (contactForm) {
         }
         
         if (hasErrors) {
+            e.preventDefault();
             return;
         }
         
@@ -295,66 +293,41 @@ if (contactForm) {
             ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
             : '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
+        // Try JavaScript submission first, but don't prevent default form submission
         try {
-            // Submit form to Formspree using FormData
             const formData = new FormData(contactForm);
             
-            const response = await fetch('https://formspree.io/f/mrbajdpl', {
+            // Use a simple fetch without complex error handling
+            fetch('https://formspree.io/f/mrbajdpl', {
                 method: 'POST',
                 body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // Show success notification
+                    const successMessage = currentLanguage === 'ar' 
+                        ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                        : 'Your message has been sent successfully! We will contact you soon.';
+                    showNotification(successMessage, 'success');
+                    contactForm.reset();
+                }
+            }).catch(error => {
+                console.log('JavaScript submission failed, form will submit normally');
             });
             
-            console.log('Formspree response status:', response.status);
+            // Allow form to submit normally as backup
+            // Don't prevent default - let the form work normally
             
-            // Formspree typically returns 200 for successful submissions
-            if (response.ok) {
-                // Show success notification
-                const successMessage = currentLanguage === 'ar' 
-                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-                    : 'Your message has been sent successfully! We will contact you soon.';
-                showNotification(successMessage, 'success');
-                contactForm.reset();
-            } else {
-                // Handle different error cases
-                let errorMessage;
-                if (response.status === 422) {
-                    errorMessage = currentLanguage === 'ar' 
-                        ? 'يرجى التحقق من صحة البيانات المدخلة' 
-                        : 'Please check your input data';
-                } else if (response.status === 429) {
-                    errorMessage = currentLanguage === 'ar' 
-                        ? 'تم إرسال رسائل كثيرة. يرجى المحاولة لاحقاً' 
-                        : 'Too many requests. Please try again later';
-                } else {
-                    errorMessage = currentLanguage === 'ar' 
-                        ? 'حدث خطأ في الخادم. يرجى المحاولة مرة أخرى' 
-                        : 'Server error. Please try again';
-                }
-                
-                showNotification(errorMessage, 'error');
-            }
         } catch (error) {
-            console.error('Form submission error:', error);
-            const errorMessage = currentLanguage === 'ar' 
-                ? 'حدث خطأ في الاتصال. يرجى التحقق من الإنترنت والمحاولة مرة أخرى' 
-                : 'Connection error. Please check your internet and try again';
-            showNotification(errorMessage, 'error');
-        } finally {
-            // Reset button state
+            console.log('JavaScript error, form will submit normally');
+        }
+        
+        // Reset button state after a short delay
+        setTimeout(() => {
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
-        }
+        }, 2000);
     });
     
-    // Fallback: If JavaScript fails, allow form to submit normally
-    // This will open in a new tab and redirect to main page
-    contactForm.addEventListener('submit', (e) => {
-        // Only prevent default if we're handling it with JavaScript
-        // If there's an error, let the form submit normally
-        if (e.defaultPrevented) {
-            return;
-        }
-    });
     
     // Add a simple success check after form submission
     // This handles cases where Formspree redirects back to the page
