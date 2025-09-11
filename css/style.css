@@ -645,6 +645,77 @@ body[lang="ar"] .footer-content {
     color: #9ca3af;
 }
 
+/* Form validation styles */
+.form-group input:invalid,
+.form-group textarea:invalid {
+    border-color: #e74c3c;
+}
+
+.form-group input:valid,
+.form-group textarea:valid {
+    border-color: #27ae60;
+}
+
+.form-group input:focus:invalid,
+.form-group textarea:focus:invalid {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.form-group input:focus:valid,
+.form-group textarea:focus:valid {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+}
+
+/* Submit button loading state */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(220,38,38,0.4) !important;
+}
+
+/* Spinner animation */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Form error states */
+.form-group.error input,
+.form-group.error textarea {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.form-group.success input,
+.form-group.success textarea {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+}
+
+/* Form label styles */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-weight: 500;
+}
+
+.form-group label span {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
 /* Footer */
 .footer {
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);

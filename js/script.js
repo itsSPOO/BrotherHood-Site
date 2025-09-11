@@ -223,30 +223,294 @@ function updatePlayerCount() {
 // Contact form handling
 const contactForm = document.querySelector('.contact-form form');
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    // Add loading state to submit button
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    
+    contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         // Get form data
         const formData = new FormData(contactForm);
-        const name = contactForm.querySelector('input[type="text"]').value;
-        const email = contactForm.querySelector('input[type="email"]').value;
-        const message = contactForm.querySelector('textarea').value;
+        const name = contactForm.querySelector('input[name="name"]').value.trim();
+        const email = contactForm.querySelector('input[name="email"]').value.trim();
+        const message = contactForm.querySelector('textarea[name="message"]').value.trim();
         
-        // Simple validation
-        if (!name || !email || !message) {
+        // Clear previous validation states
+        clearFormValidation();
+        
+        // Enhanced validation
+        let hasErrors = false;
+        
+        if (!name || name.length < 2) {
             const errorMessage = currentLanguage === 'ar' 
-                ? 'يرجى ملء جميع الحقول المطلوبة' 
-                : 'Please fill in all required fields';
-            alert(errorMessage);
+                ? 'يرجى إدخال اسم صحيح (حرفين على الأقل)' 
+                : 'Please enter a valid name (at least 2 characters)';
+            showFieldError(contactForm.querySelector('input[name="name"]'), errorMessage);
+            hasErrors = true;
+        }
+        
+        if (!email) {
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'يرجى إدخال البريد الإلكتروني' 
+                : 'Please enter your email address';
+            showFieldError(contactForm.querySelector('input[name="email"]'), errorMessage);
+            hasErrors = true;
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                const errorMessage = currentLanguage === 'ar' 
+                    ? 'يرجى إدخال بريد إلكتروني صحيح' 
+                    : 'Please enter a valid email address';
+                showFieldError(contactForm.querySelector('input[name="email"]'), errorMessage);
+                hasErrors = true;
+            }
+        }
+        
+        if (!message || message.length < 10) {
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'يرجى إدخال رسالة (10 أحرف على الأقل)' 
+                : 'Please enter a message (at least 10 characters)';
+            showFieldError(contactForm.querySelector('textarea[name="message"]'), errorMessage);
+            hasErrors = true;
+        }
+        
+        if (hasErrors) {
             return;
         }
         
-        // Simulate form submission
-        const successMessage = currentLanguage === 'ar' 
-            ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
-            : 'Your message has been sent successfully! We will contact you soon.';
-        alert(successMessage);
-        contactForm.reset();
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = currentLanguage === 'ar' 
+            ? '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...' 
+            : '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        
+        try {
+            // Submit form to Netlify
+            const response = await fetch('/', {
+                method: 'POST',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString()
+            });
+            
+            if (response.ok) {
+                const successMessage = currentLanguage === 'ar' 
+                    ? 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.' 
+                    : 'Your message has been sent successfully! We will contact you soon.';
+                showNotification(successMessage, 'success');
+                contactForm.reset();
+            } else {
+                throw new Error('Form submission failed');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.' 
+                : 'An error occurred while sending the message. Please try again.';
+            showNotification(errorMessage, 'error');
+        } finally {
+            // Reset button state
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+        }
+    });
+}
+
+// Form validation helpers
+function clearFormValidation() {
+    const formGroups = contactForm.querySelectorAll('.form-group');
+    formGroups.forEach(group => {
+        group.classList.remove('error', 'success');
+        const errorMsg = group.querySelector('.error-message');
+        if (errorMsg) {
+            errorMsg.remove();
+        }
+    });
+}
+
+function showFieldError(field, message) {
+    const formGroup = field.closest('.form-group');
+    formGroup.classList.add('error');
+    formGroup.classList.remove('success');
+    
+    // Remove existing error message
+    const existingError = formGroup.querySelector('.error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Add new error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    errorDiv.style.color = '#e74c3c';
+    errorDiv.style.fontSize = '0.9rem';
+    errorDiv.style.marginTop = '0.5rem';
+    formGroup.appendChild(errorDiv);
+}
+
+function showFieldSuccess(field) {
+    const formGroup = field.closest('.form-group');
+    formGroup.classList.add('success');
+    formGroup.classList.remove('error');
+    
+    // Remove error message if exists
+    const errorMsg = formGroup.querySelector('.error-message');
+    if (errorMsg) {
+        errorMsg.remove();
+    }
+}
+
+// Real-time validation
+if (contactForm) {
+    const nameField = contactForm.querySelector('input[name="name"]');
+    const emailField = contactForm.querySelector('input[name="email"]');
+    const messageField = contactForm.querySelector('textarea[name="message"]');
+    
+    // Name field validation
+    nameField.addEventListener('blur', () => {
+        const value = nameField.value.trim();
+        if (value && value.length >= 2) {
+            showFieldSuccess(nameField);
+        } else if (value) {
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'الاسم يجب أن يكون حرفين على الأقل' 
+                : 'Name must be at least 2 characters';
+            showFieldError(nameField, errorMessage);
+        }
+    });
+    
+    // Email field validation
+    emailField.addEventListener('blur', () => {
+        const value = emailField.value.trim();
+        if (value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(value)) {
+                showFieldSuccess(emailField);
+            } else {
+                const errorMessage = currentLanguage === 'ar' 
+                    ? 'يرجى إدخال بريد إلكتروني صحيح' 
+                    : 'Please enter a valid email address';
+                showFieldError(emailField, errorMessage);
+            }
+        }
+    });
+    
+    // Message field validation
+    messageField.addEventListener('blur', () => {
+        const value = messageField.value.trim();
+        if (value && value.length >= 10) {
+            showFieldSuccess(messageField);
+        } else if (value) {
+            const errorMessage = currentLanguage === 'ar' 
+                ? 'الرسالة يجب أن تكون 10 أحرف على الأقل' 
+                : 'Message must be at least 10 characters';
+            showFieldError(messageField, errorMessage);
+        }
+    });
+}
+
+// Notification system
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <span>${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    // Add styles
+    const notificationStyle = document.createElement('style');
+    notificationStyle.textContent = `
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .notification-success .notification-content {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+        }
+        
+        .notification-error .notification-content {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        
+        .notification-info .notification-content {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: auto;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    `;
+    
+    if (!document.querySelector('#notification-styles')) {
+        notificationStyle.id = 'notification-styles';
+        document.head.appendChild(notificationStyle);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 5000);
+    
+    // Close button functionality
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+        setTimeout(() => notification.remove(), 300);
     });
 }
 
