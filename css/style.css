@@ -2255,7 +2255,7 @@ body[lang="ar"] .rule-category li::before {
    11. LOADING SCREEN
    ============================================ */
 .loading-screen {
-    position: fixed;
+    position: center;
     top: 0;
     left: 0;
     right: 0;
