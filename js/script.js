@@ -720,47 +720,10 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Remove loading screen after page loads
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 1000);
-});
-
-// Add active class to navigation links
-const addActiveClass = () => {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-};
-
-window.addEventListener('scroll', addActiveClass);
-
-// Add CSS for active navigation link
+// Active link CSS (reuse styles via existing CSS :after rules; ensure active color)
 const activeLinkStyle = document.createElement('style');
 activeLinkStyle.textContent = `
-    .nav-link.active {
-        color: var(--primary-color) !important;
-    }
-    
-    .nav-link.active::after {
-        width: 100% !important;
-    }
+    .nav-link.active { color: var(--primary-color) !important; }
 `;
 document.head.appendChild(activeLinkStyle);
 
@@ -930,3 +893,128 @@ function showContactForm() {
     }
 }
 
+// Server Stats System
+const serverStats = {
+    fivemIP: 'YOUR_SERVER_IP:30120',
+    redmIP: 'YOUR_SERVER_IP:30120',
+    
+    init() {
+        this.updateStats();
+        // Update stats every 30 seconds
+        setInterval(() => this.updateStats(), 30000);
+        this.bindCopyButtons();
+    },
+    
+    async updateStats() {
+        // Simulate player count (replace with actual API call)
+        this.updatePlayerCount('fivem-players', Math.floor(Math.random() * 48));
+        this.updatePlayerCount('redm-players', Math.floor(Math.random() * 48));
+        
+        // For real implementation, use FiveM/RedM API:
+        // try {
+        //     const response = await fetch(`https://servers-frontend.fivem.net/api/servers/single/${serverCode}`);
+        //     const data = await response.json();
+        //     this.updatePlayerCount('fivem-players', data.Data.clients);
+        // } catch (error) {
+        //     console.error('Error fetching server stats:', error);
+        // }
+    },
+    
+    updatePlayerCount(elementId, count) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = count;
+        }
+    },
+    
+    bindCopyButtons() {
+        document.querySelectorAll('.copy-ip').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const ip = e.currentTarget.getAttribute('data-ip');
+                this.copyToClipboard(ip);
+                this.showCopyFeedback(e.currentTarget);
+            });
+        });
+    },
+    
+    copyToClipboard(text) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('IP copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+    },
+    
+    showCopyFeedback(button) {
+        const originalText = button.innerHTML;
+        const lang = currentLanguage || 'en';
+        const copiedText = lang === 'ar' ? 
+            '<i class="fas fa-check"></i> <span>تم النسخ!</span>' : 
+            '<i class="fas fa-check"></i> <span>Copied!</span>';
+        
+        button.innerHTML = copiedText;
+        button.style.background = 'rgba(34, 197, 94, 0.2)';
+        button.style.borderColor = '#22c55e';
+        button.style.color = '#22c55e';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = '';
+            button.style.borderColor = '';
+            button.style.color = '';
+        }, 2000);
+    }
+};
+
+// Performance Optimization
+const performanceOptimizer = {
+    init() {
+        this.lazyLoadImages();
+        this.optimizeAnimations();
+    },
+    
+    lazyLoadImages() {
+        const images = document.querySelectorAll('img[data-src]');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        images.forEach(img => imageObserver.observe(img));
+    },
+    
+    optimizeAnimations() {
+        // Reduce animations on low-end devices
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+            document.documentElement.classList.add('reduce-motion');
+        }
+    }
+};
+
+// Initialize all systems when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    serverStats.init();
+    performanceOptimizer.init();
+});
