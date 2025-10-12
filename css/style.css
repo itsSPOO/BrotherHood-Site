@@ -193,6 +193,15 @@ body.loaded .header {
     background-clip: text;
 }
 
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--text-white), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 .nav-menu {
     display: flex;
     list-style: none;
