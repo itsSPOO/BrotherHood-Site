@@ -2264,7 +2264,7 @@ body[lang="ar"] .rule-category li::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99999;
+   /* z-index: 999;*/
     transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
