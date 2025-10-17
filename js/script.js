@@ -111,23 +111,31 @@ scrollToTopBtn.addEventListener('click', () => {
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-link');
 
-window.addEventListener('scroll', () => {
+function updateActiveNavLink() {
     let current = '';
+    const scrollPosition = window.scrollY;
+    
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
+        const sectionTop = section.offsetTop - 100;
         const sectionHeight = section.clientHeight;
-        if (scrollY >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            current = sectionId;
         }
     });
 
     navLinks.forEach(link => {
         link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
+        const href = link.getAttribute('href');
+        if (href === `#${current}`) {
             link.classList.add('active');
         }
     });
-});
+}
+
+window.addEventListener('scroll', updateActiveNavLink);
+window.addEventListener('load', updateActiveNavLink);
 
 // Animate elements on scroll
 const observerOptions = {
@@ -152,27 +160,27 @@ document.querySelectorAll('.feature-card, .job-card, .rule-category').forEach(el
     observer.observe(el);
 });
 
-// Server status checker
-function checkServerStatus() {
-    const statusElement = document.querySelector('.server-status');
-    if (statusElement) {
-        const statusText = currentLanguage === 'ar' ? 'متصل' : 'Online';
-        statusElement.innerHTML = `<i class="fas fa-circle" style="color: #27ae60;"></i> ${statusText}`;
-    }
-}
-
-// Player count updater
-function updatePlayerCount() {
-    // More realistic player count simulation
-    const baseCount = 25; // Base online players
-    const randomVariation = Math.floor(Math.random() * 20) + 1; // 1-20 additional players
-    const playerCount = Math.min(baseCount + randomVariation, 48); // Cap at 48
+// Server stats management (combined)
+const serverManager = {
+    updateStatus() {
+        document.querySelectorAll('.server-status').forEach(el => {
+            const statusText = currentLanguage === 'ar' ? 'متصل' : 'Online';
+            el.innerHTML = `<i class="fas fa-circle" style="color: #27ae60;"></i> ${statusText}`;
+        });
+    },
     
-    const playerCountElement = document.querySelector('.stat-number');
-    if (playerCountElement) {
-        // Smooth animation for count change
-        const currentCount = parseInt(playerCountElement.textContent) || 0;
-        animateCount(playerCountElement, currentCount, playerCount, 1000);
+    updatePlayerCounts() {
+        const fivemEl = document.getElementById('fivem-players');
+        const redmEl = document.getElementById('redm-players');
+        
+        if (fivemEl) {
+            const count = Math.floor(Math.random() * 48);
+            animateCount(fivemEl, parseInt(fivemEl.textContent) || 0, count, 1000);
+        }
+        if (redmEl) {
+            const count = Math.floor(Math.random() * 48);
+            animateCount(redmEl, parseInt(redmEl.textContent) || 0, count, 1000);
+        }
     }
 }
 
@@ -278,13 +286,7 @@ if (contactForm) {
         // Try to send data to FormSubmit, fallback to simulation if CORS fails
         const formData = new FormData(contactForm);
         
-        // Add a hidden input to track submission
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = '_next';
-        hiddenInput.value = window.location.href;
-        contactForm.appendChild(hiddenInput);
-        
+            
         // Try FormSubmit first
         fetch('https://formsubmit.co/mehdijarmouni@gmail.com', {
             method: 'POST',
@@ -451,140 +453,6 @@ function showNotification(message, type = 'info') {
         </div>
     `;
     
-    // Add styles
-    const notificationStyle = document.createElement('style');
-    notificationStyle.textContent = `
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            max-width: 450px;
-            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            font-family: 'Inter', 'Cairo', sans-serif;
-        }
-        
-        .notification-content {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            padding: 20px;
-            border-radius: 15px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .notification-icon {
-            font-size: 1.5rem;
-            margin-top: 2px;
-        }
-        
-        .notification-text {
-            flex: 1;
-        }
-        
-        .notification-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        
-        .notification-message {
-            font-size: 0.95rem;
-            line-height: 1.4;
-            opacity: 0.9;
-        }
-        
-        .notification-success .notification-content {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-        }
-        
-        .notification-error .notification-content {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-        
-        .notification-info .notification-content {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-        
-        .notification-close {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            font-size: 1.3rem;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            margin-left: auto;
-        }
-        
-        .notification-close:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
-        }
-        
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%) scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0) scale(1);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0) scale(1);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%) scale(0.8);
-                opacity: 0;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .notification {
-                right: 10px;
-                left: 10px;
-                max-width: none;
-            }
-            
-            .notification-content {
-                padding: 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .notification-content {
-                padding: 12px;
-                gap: 10px;
-            }
-            
-            .notification-title {
-                font-size: 1rem;
-            }
-            
-            .notification-message {
-                font-size: 0.9rem;
-            }
-        }
-    `;
-    
-    if (!document.querySelector('#notification-styles')) {
-        notificationStyle.id = 'notification-styles';
-        document.head.appendChild(notificationStyle);
-    }
     
     document.body.appendChild(notification);
     
@@ -645,19 +513,15 @@ function hideLoadingScreen() {
 
 // Loading animation
 window.addEventListener('load', () => {
-    // Hide loading screen after a short delay
-    setTimeout(() => {
-        hideLoadingScreen();
-    }, 1500);
-    
+    setTimeout(hideLoadingScreen, 1500);
     document.body.classList.add('loaded');
     
     // Initialize server status
-    checkServerStatus();
-    updatePlayerCount();
+    serverManager.updateStatus();
+    serverManager.updatePlayerCounts();
     
     // Update player count every 30 seconds
-    setInterval(updatePlayerCount, 30000);
+    setInterval(() => serverManager.updatePlayerCounts(), 30000);
     
     // Check if we should show thank you page (for FormSubmit redirect)
     if (window.location.hash === '#thank-you') {
@@ -675,161 +539,7 @@ window.addEventListener('load', () => {
     });
 });
 
-// Add loading styles
-const style = document.createElement('style');
-style.textContent = `
-    body:not(.loaded) {
-        overflow: hidden;
-    }
-    
-    body:not(.loaded)::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    body:not(.loaded)::after {
-        content: 'BrotherHood';
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 3rem;
-        font-weight: bold;
-        z-index: 10000;
-        animation: pulse 2s infinite;
-    }
-    
-    body[lang="ar"]:not(.loaded)::after {
-        content: 'BrotherHood';
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-`;
-document.head.appendChild(style);
 
-// Active link CSS (reuse styles via existing CSS :after rules; ensure active color)
-const activeLinkStyle = document.createElement('style');
-activeLinkStyle.textContent = `
-    .nav-link.active { color: var(--primary-color) !important; }
-`;
-document.head.appendChild(activeLinkStyle);
-
-// Server information display
-const serverInfo = {
-    name: 'BrotherHood RolePlay',
-    ip: 'cfx.re/join/6gd4kj',
-    maxPlayers: 48,
-    framework: 'QBCore',
-    version: '1.4.0',
-    developer: 'SPOO',
-    discord: 'https://discord.gg/hh4YygkeNQ',
-    status: 'online',
-    uptime: '99.9%',
-    lastRestart: '24 hours ago'
-};
-
-// Display server info in console
-console.log('BrotherHood Server Information:', serverInfo);
-
-// Add server info to page
-const addServerInfo = () => {
-    const serverInfoElement = document.createElement('div');
-    serverInfoElement.className = 'server-info';
-    
-    // Set initial content based on current language
-    const initialContent = currentLanguage === 'ar' ? `
-        <div class="server-info-content">
-            <h4>معلومات الخادم</h4>
-            <p><strong>الاسم:</strong> ${serverInfo.name}</p>
-            <p><strong>العنوان:</strong> ${serverInfo.ip}</p>
-            <p><strong>الحد الأقصى:</strong> ${serverInfo.maxPlayers} لاعب</p>
-            <p><strong>الإطار:</strong> ${serverInfo.framework} ${serverInfo.version}</p>
-            <p><strong>المطور:</strong> ${serverInfo.developer}</p>
-            <p><strong>الحالة:</strong> <span class="status-online">متصل</span></p>
-        </div>
-    ` : `
-        <div class="server-info-content">
-            <h4>Server Information</h4>
-            <p><strong>Name:</strong> ${serverInfo.name}</p>
-            <p><strong>Address:</strong> ${serverInfo.ip}</p>
-            <p><strong>Max Players:</strong> ${serverInfo.maxPlayers}</p>
-            <p><strong>Framework:</strong> ${serverInfo.framework} ${serverInfo.version}</p>
-            <p><strong>Developer:</strong> ${serverInfo.developer}</p>
-            <p><strong>Status:</strong> <span class="status-online">Online</span></p>
-        </div>
-    `;
-    
-    serverInfoElement.innerHTML = initialContent;
-    
-    // Add styles for server info
-    const serverInfoStyle = document.createElement('style');
-    serverInfoStyle.textContent = `
-        .server-info {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 1rem;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            z-index: 1000;
-            max-width: 250px;
-            display: none;
-        }
-        
-        .server-info h4 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .server-info p {
-            margin: 0.25rem 0;
-        }
-        
-        .status-online {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        
-        @media (max-width: 768px) {
-            .server-info {
-                display: none !important;
-            }
-        }
-    `;
-    document.head.appendChild(serverInfoStyle);
-    
-    document.body.appendChild(serverInfoElement);
-    
-    // Show server info on hover over logo
-    const logo = document.querySelector('.logo');
-    if (logo) {
-        logo.addEventListener('mouseenter', () => {
-            serverInfoElement.style.display = 'block';
-        });
-        
-        logo.addEventListener('mouseleave', () => {
-            serverInfoElement.style.display = 'none';
-        });
-    }
-};
-
-// Initialize server info
-addServerInfo();
 
 // Test function to show thank you page (for debugging)
 window.testThankYouPage = function() {

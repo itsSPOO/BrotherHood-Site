@@ -159,10 +159,10 @@ body.loaded .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
     max-width: 100%;
     margin: 0;
-    padding: 0 var(--spacing-xs);
+    padding: 0 var(--spacing-xl);
     width: 100%;
 }
 
@@ -171,6 +171,7 @@ body.loaded .header {
     align-items: center;
     gap: var(--spacing-sm);
     text-decoration: none;
+    flex-shrink: 0;
 }
 
 .logo-img {
@@ -187,15 +188,6 @@ body.loaded .header {
 .logo-text {
     font-size: 24px;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.logo-text {
-    font-size: 24px;
-    font-weight: 700;
     background: linear-gradient(135deg, var(--text-white), var(--primary-light));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -207,6 +199,9 @@ body.loaded .header {
     list-style: none;
     gap: var(--spacing-md);
     align-items: center;
+    flex: 1;
+    justify-content: center;
+    margin: 0 var(--spacing-lg);
 }
 
 .nav-link {
@@ -244,8 +239,8 @@ body.loaded .header {
     gap: var(--spacing-xs);
     background: var(--bg-light);
     padding: 4px;
-    
     border-radius: var(--radius-full);
+    flex-shrink: 0;
 }
 
 .lang-btn {
@@ -2146,18 +2141,13 @@ body[lang="ar"] .rule-category li::before {
     }
 }
 
-@media (max-width: 1024px) {
-    .servers-grid {
-        grid-template-columns: 1fr;
-        max-width: 600px;
-    }
-    
-    .server-card {
-        padding: var(--spacing-xl);
-    }
-}
 
 @media (max-width: 768px) {
+    /* تقليل المسافات العامة */
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
     .nav-menu {
         display: none;
     }
@@ -2166,235 +2156,756 @@ body[lang="ar"] .rule-category li::before {
         display: flex;
     }
     
+    /* تحسين Hero Section */
+    .hero {
+        min-height: 85vh;
+        padding: 100px var(--spacing-md) var(--spacing-xl);
+    }
+    
+    .hero .container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+        text-align: center;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    .hero-image {
+        display: none;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
     .hero-title {
-        font-size: 40px;
+        font-size: 36px;
+        margin-bottom: var(--spacing-sm);
+        line-height: 1.2;
     }
     
     .hero-subtitle {
-        font-size: 18px;
+        font-size: 16px;
+        margin-bottom: var(--spacing-md);
     }
     
     .hero-stats {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .stat {
+        padding: var(--spacing-sm);
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+    }
+    
+    .hero-buttons {
         gap: var(--spacing-sm);
-    }
-    
-    .section-title {
-        font-size: 36px;
-    }
-    
-    .section-subtitle {
-        font-size: 16px;
-    }
-    
-    .server-card {
-        padding: var(--spacing-lg);
-    }
-    
-    .server-name {
-        font-size: 26px;
-    }
-    
-    .server-icon {
-        width: 70px;
-        height: 70px;
-        font-size: 32px;
-    }
-    
-    .server-buttons {
         flex-direction: column;
     }
     
-    .features-server-title {
-        font-size: 24px;
-        padding: var(--spacing-md);
+    .hero-buttons .btn {
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 14px;
     }
     
-    .features-grid {
-        grid-template-columns: 1fr;
+    /* تحسين الأقسام */
+    .about, .servers, .features, .jobs, .rules, .contact {
+        padding: var(--spacing-xl) 0;
     }
     
-    .jobs-server-title {
-        font-size: 24px;
-        padding: var(--spacing-md);
+    .footer {
+        padding: var(--spacing-xl) 0 var(--spacing-md);
     }
     
-    .jobs-grid,
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .rules-content {
-        grid-template-columns: 1fr;
-    }
-    
-    .contact-layout {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .contact-method-item:hover {
-        transform: translateX(0);
-    }
-    
-    .community-stats {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-title {
-        font-size: 32px;
-    }
-    
-    .hero-stats {
-        grid-template-columns: 1fr;
+    .section-header {
+        margin-bottom: var(--spacing-lg);
     }
     
     .section-title {
         font-size: 28px;
+        margin-bottom: var(--spacing-xs);
     }
     
-    .features-server-title {
-        font-size: 20px;
+    .section-subtitle {
+        font-size: 14px;
+    }
+    
+    /* تحسين بطاقات الخوادم */
+    .server-card {
+        padding: var(--spacing-md);
+    }
+    
+    .server-name {
+        font-size: 22px;
+    }
+    
+    .server-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+    
+    .server-features {
+        gap: 6px;
+        justify-content: center;
+    }
+    
+    .feature-tag {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+    
+    .server-buttons {
         flex-direction: column;
-        text-align: center;
+        gap: var(--spacing-xs);
     }
     
+    .server-buttons .btn {
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 14px;
+    }
+    
+    /* تحسين المميزات والوظائف */
+    .features-server-title,
     .jobs-server-title {
         font-size: 20px;
-        flex-direction: column;
-        text-align: center;
+        padding: var(--spacing-sm) var(--spacing-md);
+        margin-bottom: var(--spacing-md);
     }
     
-    .job-card,
-    .feature-card {
+    .features-grid,
+    .jobs-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .feature-card,
+    .job-card {
+        padding: var(--spacing-md);
+        min-height: auto;
+    }
+    
+    .feature-icon,
+    .job-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+    
+    .feature-card h3,
+    .job-card h3 {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+    
+    .feature-card p,
+    .job-card p {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+    
+    /* تحسين About Section */
+    .community-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .about-main-text {
+        padding: var(--spacing-md);
+    }
+    
+    .community-stat {
         padding: var(--spacing-sm);
-        min-height: 120px;
     }
     
-    .job-icon,
-    .feature-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
+    .community-features {
+        gap: var(--spacing-sm);
     }
     
-    .job-card h3,
-    .feature-card h3 {
-        font-size: 13px;
+    .community-feature {
+        padding: var(--spacing-md);
     }
     
-    .job-card p,
-    .feature-card p {
-        font-size: 10px;
+    .community-feature h4 {
+        font-size: 15px;
+    }
+    
+    .community-feature p {
+        font-size: 12px;
+    }
+    
+    /* تحسين القوانين */
+    .rules-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
     }
     
     .rule-category {
         padding: var(--spacing-md);
     }
     
+    .rule-category h3 {
+        font-size: 16px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .rule-category li {
+        font-size: 13px;
+        padding: var(--spacing-xs) 0;
+    }
+    
+    /* تحسين Contact Section */
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .contact-methods {
+        gap: var(--spacing-sm);
+    }
+    
+    .contact-method-item {
+        padding: var(--spacing-sm);
+    }
+    
+    .contact-method-item:hover {
+        transform: translateX(0);
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .contact-form h3 {
+        font-size: 20px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    /* تحسين Footer */
+    .footer-content {
+        gap: var(--spacing-lg);
+    }
+    
+    .footer-section {
+        padding: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    /* تقليل المسافات للشاشات الصغيرة جداً */
+    .container {
+        padding: 0 var(--spacing-xs);
+    }
+    
+    /* Hero Section للشاشات الصغيرة */
+    .hero {
+        min-height: 75vh;
+        padding: 90px var(--spacing-sm) var(--spacing-lg);
+    }
+    
+    .hero .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    .hero-image {
+        display: none;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .hero-title {
+        font-size: 28px;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .hero-subtitle {
+        font-size: 14px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .stat {
+        padding: 10px 8px;
+    }
+    
+    .stat i {
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+    
+    .stat-number {
+        font-size: 18px;
+    }
+    
+    .stat-label {
+        font-size: 10px;
+    }
+    
+    .hero-buttons {
+        gap: 10px;
+    }
+    
+    .hero-buttons .btn {
+        padding: 12px var(--spacing-md);
+        font-size: 13px;
+    }
+    
+    /* الأقسام */
+    .about, .servers, .features, .jobs, .rules, .contact {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .footer {
+        padding: var(--spacing-lg) 0 var(--spacing-sm);
+    }
+    
+    .section-header {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+    
+    .section-subtitle {
+        font-size: 13px;
+    }
+    
+    /* بطاقات الخوادم */
+    .server-card {
+        padding: var(--spacing-sm);
+    }
+    
+    .server-name {
+        font-size: 20px;
+    }
+    
+    .server-game {
+        font-size: 13px;
+    }
+    
+    .server-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .server-stats-live {
+        gap: var(--spacing-sm);
+    }
+    
+    .stat-item {
+        padding: 10px;
+    }
+    
+    .server-features {
+        gap: 5px;
+        justify-content: center;
+    }
+    
+    .feature-tag {
+        padding: 4px 8px;
+        font-size: 9px;
+    }
+    
+    /* المميزات والوظائف */
+    .features-server-title,
+    .jobs-server-title {
+        font-size: 18px;
+        flex-direction: column;
+        text-align: center;
+        padding: var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+    
+    .features-server-title i,
+    .jobs-server-title i {
+        font-size: 20px;
+    }
+    
+    .features-grid,
+    .jobs-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .job-card,
+    .feature-card {
+        padding: 12px 8px;
+        min-height: auto;
+    }
+    
+    .job-icon,
+    .feature-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    .job-card h3,
+    .feature-card h3 {
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+    
+    .job-card p,
+    .feature-card p {
+        font-size: 10px;
+        line-height: 1.3;
+    }
+    
+    /* About Section */
+    .community-stats {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .community-stat {
+        padding: 12px;
+    }
+    
+    .community-stat strong {
+        font-size: 20px;
+    }
+    
+    .community-stat span {
+        font-size: 12px;
+    }
+    
+    .community-feature {
+        padding: var(--spacing-sm);
+    }
+    
+    .community-feature h4 {
+        font-size: 14px;
+    }
+    
+    .community-feature p {
+        font-size: 11px;
+    }
+    
+    /* القوانين */
+    .rule-category {
+        padding: var(--spacing-sm);
+    }
+    
+    .rule-category h3 {
+        font-size: 15px;
+    }
+    
+    .rule-category li {
+        font-size: 12px;
+        padding: 6px 0;
+    }
+    
+    /* Contact */
+    .contact-method-item {
+        padding: 12px;
+    }
+    
+    .contact-form h3 {
+        font-size: 18px;
+    }
+    
+    .contact-form input,
+    .contact-form textarea {
+        font-size: 14px;
+        padding: 12px;
+    }
+    
+    /* Thank You Section */
     .thank-you-content {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
     }
     
     .thank-you-icon {
-        width: 80px;
-        height: 80px;
-        font-size: 40px;
+        width: 70px;
+        height: 70px;
+        font-size: 35px;
     }
     
     .thank-you-title {
-        font-size: 24px;
+        font-size: 22px;
+    }
+    
+    .thank-you-message {
+        font-size: 14px;
     }
     
     .thank-you-actions {
         flex-direction: column;
+        gap: 10px;
     }
     
     .thank-you-actions .btn {
         width: 100%;
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .footer-content {
+        gap: var(--spacing-md);
+    }
+    
+    .footer-section h3,
+    .footer-section h4 {
+        font-size: 16px;
+    }
+    
+    .footer-section p,
+    .footer-section li {
+        font-size: 13px;
+    }
+    
+    /* Notification */
+    .notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification-content {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .notification-title {
+        font-size: 1rem;
+    }
+    
+    .notification-message {
+        font-size: 0.9rem;
     }
 }
 
+
 /* ============================================
-   11. LOADING SCREEN
+   11. NOTIFICATION SYSTEM
    ============================================ */
-.loading-screen {
-    position: center;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 450px;
+    animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    font-family: 'Inter', 'Cairo', sans-serif;
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    margin-top: 2px;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.notification-message {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+.notification-success .notification-content {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.notification-error .notification-content {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.notification-info .notification-content {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.notification-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-   /* z-index: 999;*/
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: all 0.3s ease;
+    margin-left: auto;
 }
 
-.loading-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
+.notification-close:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
 }
 
-.loading-content {
-    text-align: center;
-}
-
-.loading-logo {
-    margin-bottom: var(--spacing-xl);
-}
-
-.loading-logo-img {
-    width: 120px;
-    height: 120px;
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--spacing-md);
-    animation: pulse 2s ease-in-out infinite;
-}
-
-.loading-title {
-    font-size: 32px;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.loading-spinner {
-    margin: var(--spacing-xl) auto;
-}
-
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid rgba(220, 38, 38, 0.1);
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
+    }
     to {
-        transform: rotate(360deg);
+        transform: translateX(0) scale(1);
+        opacity: 1;
     }
 }
 
-.loading-text {
-    font-size: 16px;
-    color: var(--text-light);
-    opacity: 0.8;
-    animation: pulse 1.5s ease-in-out infinite;
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
+    }
 }
 
 /* ============================================
-   12. CUSTOM SCROLLBAR
+   12. LOADING & ACTIVE STATES
+   ============================================ */
+body:not(.loaded) {
+    overflow: hidden;
+}
+
+body:not(.loaded)::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body:not(.loaded)::after {
+    content: 'BrotherHood';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    z-index: 10000;
+    animation: pulse 2s infinite;
+}
+
+.nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+.nav-link.active::after {
+    width: 80%;
+}
+
+/* ============================================
+   SCROLL TO TOP BUTTON
+   ============================================ */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: var(--shadow-primary);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+}
+
+.scroll-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(220, 38, 38, 0.5);
+}
+
+.scroll-to-top:active {
+    transform: translateY(-2px);
+}
+
+body[lang="ar"] .scroll-to-top {
+    right: auto;
+    left: 30px;
+}
+
+/* ============================================
+   13. CUSTOM SCROLLBAR
    ============================================ */
 ::-webkit-scrollbar {
     width: 12px;
