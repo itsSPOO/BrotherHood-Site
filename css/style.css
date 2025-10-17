@@ -2148,12 +2148,50 @@ body[lang="ar"] .rule-category li::before {
         padding: 0 var(--spacing-sm);
     }
     
+    /* تحسين Navbar للموبايل */
+    .nav-container {
+        padding: 0 var(--spacing-md);
+        gap: var(--spacing-sm);
+    }
+    
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .logo-text {
+        font-size: 20px;
+    }
+    
+    .language-switcher {
+        padding: 3px;
+    }
+    
+    .lang-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
     .nav-menu {
         display: none;
     }
     
     .hamburger {
         display: flex;
+    }
+    
+    /* تحسين زر الصعود لأعلى */
+    .scroll-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 18px;
+    }
+    
+    body[lang="ar"] .scroll-to-top {
+        right: auto;
+        left: 20px;
     }
     
     /* تحسين Hero Section */
@@ -2410,6 +2448,53 @@ body[lang="ar"] .rule-category li::before {
     /* تقليل المسافات للشاشات الصغيرة جداً */
     .container {
         padding: 0 var(--spacing-xs);
+    }
+    
+    /* تحسين Navbar للشاشات الصغيرة جداً */
+    .nav-container {
+        padding: 0 var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+    
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo-text {
+        font-size: 18px;
+    }
+    
+    .language-switcher {
+        padding: 2px;
+    }
+    
+    .lang-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    
+    .hamburger {
+        padding: 4px;
+    }
+    
+    .bar {
+        width: 22px;
+        height: 2.5px;
+    }
+    
+    /* تحسين زر الصعود لأعلى للشاشات الصغيرة */
+    .scroll-to-top {
+        width: 40px;
+        height: 40px;
+        bottom: 15px;
+        right: 15px;
+        font-size: 16px;
+    }
+    
+    body[lang="ar"] .scroll-to-top {
+        right: auto;
+        left: 15px;
     }
     
     /* Hero Section للشاشات الصغيرة */
