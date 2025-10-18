@@ -8,9 +8,11 @@
     <meta name="keywords" content="FiveM, RedM, QBCore, VORPCore, RolePlay, Morocco, BrotherHood, Gaming, Server, GTA, Red Dead Redemption">
     <meta name="author" content="SPOO">
     <meta name="robots" content="index, follow">
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    
+    <!-- DNS Prefetch & Preconnect for external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -35,16 +37,37 @@
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="apple-touch-icon" href="images/icon.png">
     
+    <!-- Critical CSS - Inline for faster initial render -->
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary-color:#dc2626;--bg-dark:#0f0f23;--bg-medium:#1a1a2e;--text-white:#fff;--text-light:#e5e7eb}
+        html{scroll-behavior:smooth;font-size:16px}
+        body{font-family:'Inter','Cairo',sans-serif;line-height:1.6;color:#1f2937;background-color:var(--bg-dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        .loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0f0f23 0%,#1a1a2e 100%);display:flex;justify-content:center;align-items:center;z-index:9999;transition:opacity .5s ease,visibility .5s ease}
+        .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loading-content{text-align:center}
+        .loading-logo-img{width:120px;height:120px;margin-bottom:2rem;animation:pulse 2s ease-in-out infinite}
+        .spinner{width:50px;height:50px;border:4px solid rgba(220,38,38,.2);border-top-color:#dc2626;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(.95)}}
+        .header{position:fixed;top:0;left:0;width:100%;background:rgba(15,15,35,.95);backdrop-filter:blur(10px);z-index:1000;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+        .navbar{padding:1rem 0}
+        .nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;align-items:center}
+    </style>
+    
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all';this.onload=null;">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all';this.onload=null;">
+    <noscript>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    </noscript>
     
     <!-- Preload critical resources -->
     <link rel="preload" href="css/style.css" as="style">
-    <link rel="preload" href="js/script.js" as="script">
-    <link rel="preload" href="images/hero-bg.jpg" as="image">
-    <link rel="preload" href="images/logo.png" as="image">
+    <link rel="preload" href="images/logo.png" as="image" fetchpriority="high">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cairo:wght@400;600;700&display=swap" as="style">
 </head>
 <body>
     <!-- Header -->
@@ -52,7 +75,7 @@
         <nav class="navbar">
             <div class="nav-container">
                 <a href="#home" class="logo">
-                    <img src="images/logo.png" alt="BrotherHood RolePlay Server Logo" class="logo-img" decoding="async">
+                    <img src="images/logo.png" alt="BrotherHood RolePlay Server Logo" class="logo-img" width="50" height="50" fetchpriority="high" decoding="async">
                     <span class="logo-text">BrotherHood</span>
                 </a>
                 <ul class="nav-menu">
@@ -80,7 +103,10 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title" data-en="Welcome to BrotherHood" data-ar="مرحباً بك في BrotherHood">Welcome to BrotherHood</h1>
+            <div class="hero-title-wrapper">
+                <h1 class="hero-title" data-en="Welcome to BrotherHood" data-ar="مرحباً بك في BrotherHood">Welcome to BrotherHood</h1>
+                <img src="images/logo.png" alt="BrotherHood Logo" class="hero-title-logo" width="80" height="80">
+            </div>
             <p class="hero-subtitle" data-en="The Best FiveM & RedM RolePlay Servers in Morocco" data-ar="خوادم الأدوار FiveM و RedM الأفضل في المغرب العربي">The Best FiveM & RedM RolePlay Servers in Morocco</p>
             <div class="hero-stats">
                 <div class="stat">
@@ -110,13 +136,13 @@
                     <span data-en="Choose Your Server" data-ar="اختر خادمك">Choose Your Server</span>
                 </a>
                 <a href="https://discord.gg/hh4YygkeNQ" class="btn btn-secondary" target="_blank">
-                    <i class="fab fa-discord"></i>
+                    <i class="fa-brands fa-discord" style="color: #dc2626;"></i>
                     <span data-en="Join Discord" data-ar="انضم للديسكورد">Join Discord</span>
                 </a>
             </div>
         </div>
         <div class="hero-image">
-            <img src="images/hero-bg.jpg" alt="BrotherHood FiveM RolePlay Server Screenshot" class="hero-img" fetchpriority="high" decoding="async">
+            <img src="images/hero-bg.jpg" alt="BrotherHood FiveM RolePlay Server Screenshot" class="hero-img" width="1920" height="1080" loading="eager" decoding="async">
         </div>
     </section>
 
@@ -793,7 +819,7 @@
                     <h3>BrotherHood</h3>
                     <p data-en="The Best RolePlay Server in Morocco" data-ar="خادم الأدوار الأفضل في المغرب العربي">The Best RolePlay Server in Morocco</p>
                     <div class="social-links">
-                        <a href="https://discord.gg/hh4YygkeNQ" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://discord.gg/hh4YygkeNQ" target="_blank"><i class="fa-brands fa-discord" style="color: #dc2626;"></i></a>
                     </div>
                 </div>
                 <div class="footer-section">
@@ -823,20 +849,31 @@
         </div>
     </footer>
 
-    <!-- ing Screen -->
+    <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
             <div class="loading-logo">
-                <img src="images/logo.png" alt="BrotherHood Logo" class="loading-logo-img" loading="lazy" decoding="async">
+                <img src="images/logo.png" alt="BrotherHood Logo" class="loading-logo-img" width="120" height="120" decoding="async">
             </div>
-            <div class="loading-spinner">
-                <div class="spinner"></div>
-                
-            </div>
-
         </div>
     </div>
 
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script src="js/script.js" defer></script>
+    
+    <!-- Performance optimization -->
+    <script>
+        // Preload critical images on interaction
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                const heroImg = new Image();
+                heroImg.src = 'images/hero-bg.jpg';
+            });
+        }
+    </script>
 </body>
 </html>

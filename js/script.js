@@ -115,19 +115,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Scroll to top button
-const scrollToTopBtn = document.createElement('button');
-scrollToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-scrollToTopBtn.className = 'scroll-to-top';
-document.body.appendChild(scrollToTopBtn);
+// Scroll to top button with throttle
+const scrollToTopBtn = document.getElementById('scroll-to-top');
+let scrollTimeout;
 
 window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-        scrollToTopBtn.classList.add('show');
-    } else {
-        scrollToTopBtn.classList.remove('show');
+    if (!scrollTimeout) {
+        scrollTimeout = setTimeout(() => {
+            scrollToTopBtn.classList.toggle('show', window.pageYOffset > 300);
+            scrollTimeout = null;
+        }, 100);
     }
-});
+}, { passive: true });
 
 scrollToTopBtn.addEventListener('click', () => {
     window.scrollTo({
@@ -136,58 +135,51 @@ scrollToTopBtn.addEventListener('click', () => {
     });
 });
 
-// Active navigation link highlighting
+// Active navigation link highlighting with throttle
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-link');
+let navTimeout;
 
 function updateActiveNavLink() {
-    let current = '';
-    const scrollPosition = window.scrollY;
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.clientHeight;
-        const sectionId = section.getAttribute('id');
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-            current = sectionId;
-        }
-    });
+    if (!navTimeout) {
+        navTimeout = setTimeout(() => {
+            let current = '';
+            const scrollPosition = window.scrollY;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + section.clientHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
 
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        const href = link.getAttribute('href');
-        if (href === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+            });
+            navTimeout = null;
+        }, 100);
+    }
 }
 
-window.addEventListener('scroll', updateActiveNavLink);
+window.addEventListener('scroll', updateActiveNavLink, { passive: true });
 window.addEventListener('load', updateActiveNavLink);
 
-// Animate elements on scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+// Animate elements on scroll - optimized
+if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.cssText = 'opacity: 1; transform: translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
+    document.querySelectorAll('.feature-card, .job-card, .rule-category').forEach(el => {
+        el.style.cssText = 'opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
     });
-}, observerOptions);
-
-// Observe all feature cards, job cards, and rule categories
-document.querySelectorAll('.feature-card, .job-card, .rule-category').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
+}
 
 // Server stats management (combined)
 const serverManager = {
@@ -540,9 +532,9 @@ function hideLoadingScreen() {
     }
 }
 
-// Loading animation
+// Loading animation - instant
 window.addEventListener('load', () => {
-    setTimeout(hideLoadingScreen, 1500);
+    hideLoadingScreen();
     document.body.classList.add('loaded');
     
     // Initialize server status
