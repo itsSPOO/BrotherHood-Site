@@ -241,6 +241,8 @@ body.loaded .header {
     padding: 4px;
     border-radius: var(--radius-full);
     flex-shrink: 0;
+    position: relative;
+    z-index: 1001;
 }
 
 .lang-btn {
