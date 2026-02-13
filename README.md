@@ -28,4 +28,4 @@ A concise, responsive landing page for the BrotherHood FiveM and RedM roleplay s
 - Update meta tags (title, description, OG/Twitter) and images in index.html
 
 ## Links
-- Discord: https://discord.gg/AyjVxPaVFY
+- Discord: https://discord.gg/hh4YygkeNQ
