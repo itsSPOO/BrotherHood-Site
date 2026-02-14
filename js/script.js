@@ -192,15 +192,10 @@ const serverManager = {
     
     updatePlayerCounts() {
         const fivemEl = document.getElementById('fivem-players');
-        const redmEl = document.getElementById('redm-players');
         
         if (fivemEl) {
             const count = Math.floor(Math.random() * 48);
             animateCount(fivemEl, parseInt(fivemEl.textContent) || 0, count, 1000);
-        }
-        if (redmEl) {
-            const count = Math.floor(Math.random() * 48);
-            animateCount(redmEl, parseInt(redmEl.textContent) || 0, count, 1000);
         }
     }
 }
@@ -627,21 +622,16 @@ function showContactForm() {
 // Server Stats System
 const serverStats = {
     fivemIP: 'YOUR_SERVER_IP:30120',
-    redmIP: 'YOUR_SERVER_IP:30120',
     
     init() {
-        this.updateStats();
-        // Update stats every 30 seconds
-        setInterval(() => this.updateStats(), 30000);
-        this.bindCopyButtons();
+        return;
     },
     
     async updateStats() {
         // Simulate player count (replace with actual API call)
         this.updatePlayerCount('fivem-players', Math.floor(Math.random() * 48));
-        this.updatePlayerCount('redm-players', Math.floor(Math.random() * 48));
         
-        // For real implementation, use FiveM/RedM API:
+        // For real implementation, use FiveM API:
         // try {
         //     const response = await fetch(`https://servers-frontend.fivem.net/api/servers/single/${serverCode}`);
         //     const data = await response.json();
@@ -658,59 +648,7 @@ const serverStats = {
         }
     },
     
-    bindCopyButtons() {
-        document.querySelectorAll('.copy-ip').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const ip = e.currentTarget.getAttribute('data-ip');
-                this.copyToClipboard(ip);
-                this.showCopyFeedback(e.currentTarget);
-            });
-        });
-    },
     
-    copyToClipboard(text) {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(() => {
-                console.log('IP copied to clipboard');
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-            });
-        } else {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-            } catch (err) {
-                console.error('Failed to copy:', err);
-            }
-            document.body.removeChild(textArea);
-        }
-    },
-    
-    showCopyFeedback(button) {
-        const originalText = button.innerHTML;
-        const lang = currentLanguage || 'en';
-        const copiedText = lang === 'ar' ? 
-            '<i class="fas fa-check"></i> <span>تم النسخ!</span>' : 
-            '<i class="fas fa-check"></i> <span>Copied!</span>';
-        
-        button.innerHTML = copiedText;
-        button.style.background = 'rgba(34, 197, 94, 0.2)';
-        button.style.borderColor = '#22c55e';
-        button.style.color = '#22c55e';
-        
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.style.background = '';
-            button.style.borderColor = '';
-            button.style.color = '';
-        }, 2000);
-    }
 };
 
 // Performance Optimization

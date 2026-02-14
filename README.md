@@ -1,6 +1,6 @@
 ﻿# BrotherHood RolePlay — Website
 
-A concise, responsive landing page for the BrotherHood FiveM and RedM roleplay servers.
+A concise, responsive landing page for the BrotherHood FiveM roleplay server.
 
 ## Features
 - Responsive, fast, and accessible
